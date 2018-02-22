@@ -1,0 +1,206 @@
+\documentclass[12pt]{article}
+
+%margó méretek
+\usepackage[a4paper,
+inner = 25mm,
+outer = 25mm,
+top = 25mm,
+bottom = 25mm]{geometry}
+
+\usepackage{lmodern}
+\usepackage[magyar]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx} %elte logo
+\usepackage{amssymb}
+\usepackage{amsmath} % \text{} in math mode
+\usepackage{setspace} %spacing
+\usepackage{enumerate} %enum as a)b)c)
+\usepackage{nameref} %referencing chapters with names
+
+\setstretch{1.2}
+\begin{document}
+	
+	
+	
+	% a címlap, túl sokat nem kell módosítani rajta, leszámítva a neved/neptunodat (dátumot)
+	\begin{titlepage}
+		\vspace*{0cm}
+		\centering
+		\begin{tabular}{cp{1cm}c}
+			\begin{minipage}{4cm}
+				\vspace{0pt}
+				\includegraphics[width=1\textwidth]{elte_cimer}
+			\end{minipage} & &
+			\begin{minipage}{7cm}
+				\vspace{0pt}Eötvös Loránd Tudományegyetem \vspace{10pt} \newline
+				Informatikai Kar \vspace{10pt} \newline
+				Programozási Nyelvek és Fordítóprogramok Tanszék
+			\end{minipage}
+		\end{tabular}
+		
+		\vspace*{0.2cm}
+		\rule{\textwidth}{1pt}
+		
+		\vspace*{3cm}
+		{\Huge Osztott rendszerek szintézise }
+		
+		\vspace*{0.5cm}
+		{\normalsize IPM-08sztORSZE}
+		
+		\vspace{2cm}
+		{\huge Konzultációs segédanyag}
+		
+		\vspace*{5cm}
+		
+		{\large \verb|Kopácsi László, Szabó Miklós|}
+		
+		\vfill
+		
+		\vspace*{1cm}
+		Utolsó módosítás: \today
+	\end{titlepage}
+	
+	\tableofcontents
+	\newpage
+	
+	\section{konzultáció}
+		\subsection{Áttekintés}
+		\paragraph{}
+		Az előadás során több, temporális logikai relációval találkoztunk, nézzük ezeket át informálisan, kezdve a biztonsági tulajdonságokkal.
+		
+	\begin{itemize}
+		\item 
+		Az első, melyet ''háromszög''-ként említünk ($ \vartriangleright $), bizonyos állapot-átmeneteket megenged, másokat pedig megtilt. A $(P \vartriangleright Q)$ azt jelenti, hogy a $P$ állapotot \textbf{ha} elhagyjuk, akkor ezt csak a $Q$-n keresztül tehetjük meg. A háromszög azonban nem tesz semmiféle kikötést arról, hogy a $P$-t el kell hagynunk, csupán biztosít minket arról, hogy ha ez mégis megtörténik, akkor milyen irányba (nem) mozdulhatunk.
+		
+		\item Másik biztonsági tulajdonság az \textit{invariáns}. Ha egy $K$ állítás invariáns, akkor ennek minden állapot-átmenet előtt és után teljesülnie kell.
+		
+		\item A harmadik említett kikötés a \textit{fixpont}. Ezzel leírhatjuk, hogy ha egy rendszerben már nem figyelhetünk meg további állapot-átmeneteket, akkor milyen tulajdonságoknak kell teljesülnie. $(FP \Rightarrow R)$ estén például egy $R$-el jelölt állítás igaz, amennyiben fixpontba jutottunk. Fixpontba azonban nem csak a kívánt befejezési állapot tartozhat, ha holtpont helyzet alakul ki, azt is tekinthetjük fixpontnak.
+	\end{itemize}
+	Természetesen nem csak biztonsági tulajdonságokra van szükségünk - azaz mit (ne) csinálhasson a rendszer -, hanem haladásira is (azért csináljon valamit).
+	
+	\begin{itemize}
+		\item Az ''egyenes nyíl'' ($\mapsto$) néven nevezett reláció egy szigorú kikötés arra vonatkozóan, hogy egy állapotból milyen másik helyzetbe \textbf{kell} lépnünk. Míg $\vartriangleright$ esetén csupán azt mondtuk, hogy \textit{ha} elhagyunk egy állapotot, akkor azt milyen irányba tegyük, a $(P \mapsto Q)$ azt mondja, hogy a $P$ állapotból a $Q$ állapotba kell, hogy kerüljünk (véges időn belül).
+		\item Ennél megengedőbb a ''görbe nyíl''-ként ($\hookrightarrow$) ismert reláció. Ebben az esetben a $(A \hookrightarrow B)$ feltétel csupán annyit mond, hogy az $A$ állapotot előbb-utóbb a $B$ állapot fogja követni (azaz $A$-ból elkerülhetetlenül $B$-be fogunk érkezni), de itt nincs semmilyen megkötés arra, hogy a két állapot egymás után következzen be. Legális állapot-átmenet sorozat az $(A \hookrightarrow B)$-ra az $<A, G, F, D, F, E, C, D, B>$ is.
+	\end{itemize}
+
+\subsection{Étkező filozófusok}\label{etkezo-filo}
+	Tekintsük az előadáson is ismertetett \textit{étkező filozófusok} feladatot (jegyzet\textsuperscript{\cite{orsi_jegyzet}} 1.1). Próbáljuk meg kiegészíteni a feltételeket további megkötések formalizálásával:
+	\begin{itemize}
+		\item Ha a rendszer nyugalmi állapotban van, akkor egy filozófus sem eszik.
+		\item Mindegyik filozófusra igaz, hogy ha hazament, akkor utána már nem kerülhet más állapotba.
+	\end{itemize}
+
+\subsection{Moziterem}\label{moziterem-feladat}
+	A következő példában egy mozira vonatkozó feladatot fogunk ismertetni, ahol a nézők tevékenységére szeretnénk megkötéseket tenni. A jelölést megkönnyítendő vezessük be az alábbiakat: $n(i)$ jelölje az $i$-ik nézőt. A moziba látogatók állapotait az alábbiak alapján jelöljük:
+	\begin{enumerate}[a)]
+		\item megérkezik a moziba - a
+		\item jegyet vesz - j
+		\item üdítőt és nasit vásárol - b
+		\item érvényes jeggyel rendelkezik - t
+		\item filmet néz - f
+		\item hazamegy - h
+	\end{enumerate}
+	Próbáljuk formalizálni az alábbi feltételeket:
+	\begin{itemize}
+		\item A moziba érkező néző filmet fog nézni.
+		\item Ha valaki érvényes jeggyel rendelkezik, akkor megnézi a filmet.
+		\item Ha a moziban nincs mozgás, akkor minden néző már otthon van.
+		\item A moziba érkező néző jegyet vásárol, vagy a büfébe megy.
+		\item A film után a néző hazamegy.
+		\item Senki nem nézhet filmet úgy, hogy nincs érvényes jegye. (Tipp: próbáljunk invariánst megfogalmazni.)
+		\item Ha valaki hazament, akkor már nem csinál semmit a moziban.
+	\end{itemize}
+
+\newpage
+\section{konzultáció}
+\subsection{Áttekintés}
+Ahhoz, hogy a későbbiekben biztos módon számolhassunk programokkal , elkerülhetetlen a számunkra szükséges (alap)fogalmakat tisztázni a halmazelmélet és a relációk témakörében.
+
+Legyenek $A$ és $B$ tetszőleges halmazok. $A$ és $B$ \textit{direkt-}, vagy \textit{Descartes}-szorzatán azt a halmazt értjük, melyben olyan párok találhatóak, melynek első eleme $A$-, második eleme pedig $B$-beli.
+$$A \times B ::= \{ (a,b) | a \in A \text{ és } b \in B \}$$
+Jelölje $r \subseteq A \times B$ azt a bináris relációt, mely $A$ elemeihez rendel értékeket a $B$ halmazból ($A$ és $B$ tetszőleges halmazok). A reláció elemeit $(a,b) \in r $ módon fogjuk jelölni.
+$$ \text{Az } r \text{ reláció értelmezési tartománya: } D_r = \{a \in A | \exists b \in B: (a,b) \in r \} \subseteq A$$
+$$ \text{Az } r \text{ reláció értékkészlete: } R_r = \{b \in B | \exists a \in A: (a,b) \in r \} \subseteq B$$
+$$\ r(a) \text{ jelölje azt a halmazt, melynek elemei: } \{b \in B | (a,b) \in r \} $$
+
+Világos, hogy az értelmezési tartományban olyan elemek vannak, amikhez rendel valamit $r$, míg az értékkészletben olyanokat találhatunk, amik valamilyen elemhez hozzá lettek rendelve. Egy elem képe a hozzá rendelt elemek halmazából áll elő.
+
+Egy $g$ relációt \textit{parciális függvény}nek (vagy determinisztikus relációnak) nevezhetünk, amennyiben az alábbi teljesül:
+$$\forall a \in A : |g(a)| \le 1,$$ azaz minden elemhez \textit{legfeljebb} egy másikat társítunk.
+Jelölésünk ekkor: $g \in A \rightarrow B$.
+Ha minden elemhez pontosan egy értéket rendelünk, akkor az $f$ reláció függvény, azaz:
+$$\forall a \in A : |f(a)| = 1. $$
+Jelölésünk ekkor: $ f: A \rightarrow B $. Ebben az esetben általában $f(a)$ nem az egy elemű halmazt, hanem annak képét jelenti.
+
+Ahhoz, hogy állításokat fogalmazhassunk meg a későbbiekben, szükségünk lesz logikai relációkra is.
+$$\text{A } h \subseteq A \times \mathbb{L} \text{ logikai relációnak nevezzük, ahol } \mathbb{L} ::= \{igaz, hamis\}.$$
+Ha $h$ függvény, akkor \textit{logikai függvény}nek nevezzük.\\
+Egy reláció inverzét az alábbi módon definiálhatjuk:
+$$R^{(-1)} ::= \{(b,a) \in B \times A | (a,b) \in R  \}$$
+
+A továbbiakban szükségünk lesz egy reláció adott halmazra vonatkozó inverz- és őskép definíciójára.\\
+A $H \subseteq B $ halmaz $R$ reláció szerinti \textit{inverz}képe:
+$$ R^{(-1)}(H) ::= \{ a \in A | R(a) \cap H \ne \varnothing \}$$
+A $H \subseteq B $ halmaz $R$ reláció szerinti \textit{ős}képe:
+$$ R^{-1}(H) ::= \{ a \in A | R(a) \subseteq H \}$$
+
+Meggondolva látható, hogy az \textit{inverzkép} megengedőbb, hisz csak annyit kér, hogy egy adott elemhez \textit{létezzen} $H$-beli elem az $R$ hozzárendelésben, az \textit{őskép} viszont megköveteli, hogy \textit{minden} ilyen elem a $H$ halmazban legyen.
+
+Legyen $R \subseteq A \times \mathbb{L}$ logikai reláció, $R$ igazsághalmaza ekkor:
+$$  \lceil R \rceil ::= R^{-1}(\{igaz\}) \text{ azaz: } \lceil R \rceil = \{a \in D_R | R(a) \subseteq \{igaz\} \} $$
+Az igazsághalmazt tehát az $\{igaz\}$ halmazra vett őskép szerint definiáljuk.\\
+Ha inverzképet számolunk, akkor juthatunk a \textit{gyenge igazsághalmaz} fogalmához:
+$$  \lfloor R \rfloor ::= R^{(-1)}(\{igaz\}) \text{ azaz: } \lfloor R \rfloor = \{a \in D_R | R(a) \cap \{igaz\} \ne \varnothing \} $$
+
+A későbbiekben nagyban megkönnyíti a dolgunkat, ha bevezetjük az \textit{azonosan igaz}, és az \textit{azonosan hamis} logikai függvényeket.
+$$Igaz: A \rightarrow \mathbb{L}: \forall a \in A: Igaz(a) = \{igaz\} $$
+$$Hamis: A \rightarrow \mathbb{L}: \forall a \in A: Hamis(a) = \{hamis\} $$
+Könnyű meggondolni, hogy ekkor $\lceil Igaz \rceil = A \text{ és } \lceil Hamis \rceil = \varnothing $.\\
+Az igazsághalmazzal kapcsolatban fontos megemlíteni néhány tulajdonságot, melyeket a későbbiekben kihasználunk.\\
+\\
+Legyenek $P$, $Q \subseteq A \times \mathbb{L}$, ekkor:
+\begin{itemize}
+	\item $ \lceil P \land Q \rceil = \lceil P \rceil \cap \lceil Q \rceil $
+	\item $ \lceil P \lor Q \rceil = \lceil P \rceil \cup \lceil Q \rceil  $
+	\item $	\lceil \neg P \rceil = A \setminus \lceil P \rceil  $
+	\item $\lceil P \Rightarrow Q \rceil = \lceil \neg P \lor Q \rceil = (A \setminus P) \cup \lceil Q \rceil $
+	\item $ P \Rightarrow Q = \lceil P \rceil \subseteq \lceil Q \rceil $
+\end{itemize}
+
+Egyszerűbben megfogalmazhatóak állítások, ha tudjuk, hogy $A \Rightarrow B$. Ekkor ugyanis:
+\begin{itemize}
+	\item $A \lor B = B$
+	\item $A \land B = A$
+\end{itemize}
+Nézzünk erre egy példát, legyenek $A$, $B: \mathbb{N} \times \mathbb{L}$ úgy, hogy:\\
+$\lceil A \rceil := $\{10-nél nagyobb szám\} és\\
+$\lceil B \rceil := $ \{pozitív szám\}.\\
+Világos, hogy $A \Rightarrow B$, hiszen ha egy egész szám 10-nél nagyobb, akkor pozitív.
+Az $A \lor B$ állítást úgy fogalmazhatjuk meg, hogy azokat az egész számokat keressük, melyek 10-nél nagyobbak, \textbf{vagy} pozitívak. Érződik, hogy a \textit{vagy} kapcsolat miatt a gyengébb feltétellel is megelégszünk, így a bővebb halmaz, azaz a pozitív számok halmazát kapjuk $(=B)$. Ha azonban a 10-nél nagyobb \textbf{és} pozitív számokra vagyunk kíváncsiak, akkor a szigorítás miatt a szűkebb halmazt kapjuk, tehát a 10-nél nagyobb számokat kell vizsgálnunk $(=A)$.
+\newpage
+
+\section{Megoldások}
+	~\ref{etkezo-filo} - \nameref{etkezo-filo}
+	\begin{itemize}
+		\item $FP \Rightarrow (\forall i: \neg f(i).e)$
+		\item $f(i).o \vartriangleright \bot$
+	\end{itemize}
+	~\ref{moziterem-feladat} - \nameref{moziterem-feladat}
+	\begin{itemize}
+		\item $n(i).a \hookrightarrow n(i).f $
+		\item $n(i).t \hookrightarrow n(i).f$
+		\item $FP \Rightarrow \forall i : n(i).h$
+		\item $n(i).a \vartriangleright (n(i).j \lor n(i).b)$
+		\item $n(i).f \mapsto n(i).h$
+		\item $(\forall i: n(i).f \Rightarrow n(i).t) \in inv$
+		\item $n(i).h \vartriangleright \bot$
+	\end{itemize}
+
+\begin{thebibliography}{9}
+\bibitem{orsi_jegyzet}
+\raggedright
+dr. Horváth Zoltán: Párhuzamos és elosztott programozás (http://people.inf.elte.hu/hz/parh/jegyzet.ps)
+
+\end{thebibliography}
+\end{document}
