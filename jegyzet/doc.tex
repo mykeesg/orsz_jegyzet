@@ -1,6 +1,6 @@
 \documentclass[12pt]{article}
 
-%margó méretek
+%margins
 \usepackage[a4paper,
 inner = 25mm,
 outer = 25mm,
@@ -13,17 +13,19 @@ bottom = 25mm]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage{graphicx} %elte logo
 \usepackage{amssymb}
-\usepackage{amsmath} % \text{} in math mode
+\usepackage{amsmath} % \text{}, \substack{} in math mode
 \usepackage{setspace} %spacing
 \usepackage{enumerate} %enum as a)b)c)
 \usepackage{nameref} %referencing chapters with names
 
+
+\newcommand{\lfsih}[1] {$\lceil lf(S,#1) \rceil$}
+\newcommand{\sprog}{$S \subseteq A \times A^{**} $}
+
+
 \setstretch{1.2}
 \begin{document}
 	
-	
-	
-	% a címlap, túl sokat nem kell módosítani rajta, leszámítva a neved/neptunodat (dátumot)
 	\begin{titlepage}
 		\vspace*{0cm}
 		\centering
@@ -120,8 +122,8 @@ Ahhoz, hogy a későbbiekben biztos módon számolhassunk programokkal , elkerü
 Legyenek $A$ és $B$ tetszőleges halmazok. $A$ és $B$ \textit{direkt-}, vagy \textit{Descartes}-szorzatán azt a halmazt értjük, melyben olyan párok találhatóak, melynek első eleme $A$-, második eleme pedig $B$-beli.
 $$A \times B ::= \{ (a,b) | a \in A \text{ és } b \in B \}$$
 Jelölje $r \subseteq A \times B$ azt a bináris relációt, mely $A$ elemeihez rendel értékeket a $B$ halmazból ($A$ és $B$ tetszőleges halmazok). A reláció elemeit $(a,b) \in r $ módon fogjuk jelölni.
-$$ \text{Az } r \text{ reláció értelmezési tartománya: } D_r = \{a \in A | \exists b \in B: (a,b) \in r \} \subseteq A$$
-$$ \text{Az } r \text{ reláció értékkészlete: } R_r = \{b \in B | \exists a \in A: (a,b) \in r \} \subseteq B$$
+$$ \text{Az } r \text{ reláció értelmezési tartománya: } \mathcal{D}_r = \{a \in A | \exists b \in B: (a,b) \in r \} \subseteq A$$
+$$ \text{Az } r \text{ reláció értékkészlete: } \mathcal{R}_r = \{b \in B | \exists a \in A: (a,b) \in r \} \subseteq B$$
 $$\ r(a) \text{ jelölje azt a halmazt, melynek elemei: } \{b \in B | (a,b) \in r \} $$
 
 Világos, hogy az értelmezési tartományban olyan elemek vannak, amikhez rendel valamit $r$, míg az értékkészletben olyanokat találhatunk, amik valamilyen elemhez hozzá lettek rendelve. Egy elem képe a hozzá rendelt elemek halmazából áll elő.
@@ -148,10 +150,10 @@ $$ R^{-1}(H) ::= \{ a \in A | R(a) \subseteq H \}$$
 Meggondolva látható, hogy az \textit{inverzkép} megengedőbb, hisz csak annyit kér, hogy egy adott elemhez \textit{létezzen} $H$-beli elem az $R$ hozzárendelésben, az \textit{őskép} viszont megköveteli, hogy \textit{minden} ilyen elem a $H$ halmazban legyen.
 
 Legyen $R \subseteq A \times \mathbb{L}$ logikai reláció, $R$ igazsághalmaza ekkor:
-$$  \lceil R \rceil ::= R^{-1}(\{igaz\}) \text{ azaz: } \lceil R \rceil = \{a \in D_R | R(a) \subseteq \{igaz\} \} $$
+$$  \lceil R \rceil ::= R^{-1}(\{igaz\}) \text{ azaz: } \lceil R \rceil = \{a \in \mathcal{D}_R | R(a) \subseteq \{igaz\} \} $$
 Az igazsághalmazt tehát az $\{igaz\}$ halmazra vett őskép szerint definiáljuk.\\
 Ha inverzképet számolunk, akkor juthatunk a \textit{gyenge igazsághalmaz} fogalmához:
-$$  \lfloor R \rfloor ::= R^{(-1)}(\{igaz\}) \text{ azaz: } \lfloor R \rfloor = \{a \in D_R | R(a) \cap \{igaz\} \ne \varnothing \} $$
+$$  \lfloor R \rfloor ::= R^{(-1)}(\{igaz\}) \text{ azaz: } \lfloor R \rfloor = \{a \in \mathcal{D}_R | R(a) \cap \{igaz\} \ne \varnothing \} $$
 
 A későbbiekben nagyban megkönnyíti a dolgunkat, ha bevezetjük az \textit{azonosan igaz}, és az \textit{azonosan hamis} logikai függvényeket.
 $$Igaz: A \rightarrow \mathbb{L}: \forall a \in A: Igaz(a) = \{igaz\} $$
@@ -178,6 +180,73 @@ $\lceil A \rceil := $\{10-nél nagyobb szám\} és\\
 $\lceil B \rceil := $ \{pozitív szám\}.\\
 Világos, hogy $A \Rightarrow B$, hiszen ha egy egész szám 10-nél nagyobb, akkor pozitív.
 Az $A \lor B$ állítást úgy fogalmazhatjuk meg, hogy azokat az egész számokat keressük, melyek 10-nél nagyobbak, \textbf{vagy} pozitívak. Érződik, hogy a \textit{vagy} kapcsolat miatt a gyengébb feltétellel is megelégszünk, így a bővebb halmaz, azaz a pozitív számok halmazát kapjuk $(=B)$. Ha azonban a 10-nél nagyobb \textbf{és} pozitív számokra vagyunk kíváncsiak, akkor a szigorítás miatt a szűkebb halmazt kapjuk, tehát a 10-nél nagyobb számokat kell vizsgálnunk $(=A)$.
+
+\subsection{Program}
+
+Röviden tekintsük át, hogy a Fóthi\textsuperscript{\cite{fothi_biblia}}-Horváth - féle modellben hogyan is definiáltuk a programot és annak hatásrelációját.
+
+Jelölje $A^*$ az $A$ elemeiből képzett véges, $A^\infty$ pedig a végtelen sorozatokat. A későbbiekben $A^{**}$ jelenti az $A^* \cup A^{\infty}$ halmazt, azaz a véges és végtelen sorozatok halmazát. Ha alaphalmaznak a természetes számokat választjuk, akkor az $<1, 5, 3, 2> \in A^*$ egy véges, míg az $<1, 2, 3, 4, ...> \in A^{\infty}$ végtelen sorozatot jelöl.\\
+
+\textit{Utasítás} vagy \textit{program} alatt egy olyan \sprog relációt értünk, melyre:
+\begin{enumerate}
+	\item $\mathcal{D}_S = A$
+	\item $\forall a \in A : \forall \alpha \in S(a) : |\alpha|\ne 0 \land  \alpha_1 = a $
+	\item $(\alpha \in \mathcal{R}_S \land \alpha \in A^*  ) \Rightarrow (\forall i   (1 \le i < |\alpha|): \alpha_i \ne \alpha_{i+1} )$
+	\item $(\alpha \in \mathcal{R}_S \land \alpha \in A^{\infty}) \Rightarrow (\forall i \in \mathbb{N} (\alpha_{i} = \alpha_{i+1} \rightarrow (\forall k \in \mathbb{N^+}): \alpha_{i} = \alpha_{i+k})))$
+\end{enumerate}
+A fenti definíció a \textit{működés} fogalmát próbálja absztrakt módon szemléltetni. A négy pont jól jellemzi a programot: elsőként szeretnénk, ha a program minden állapottér-beli pontban értelmezve lenne (azaz a program mindenhonnan el tud indulni).\\
+Második pontban azt fogalmazzuk meg, hogy egy sorozat a működése teljes történetét írja le, kezdve a kiindulási állapottal.\\
+A harmadik pontunk a \textit{redukáltságra} vonatkozik: ha véges hosszú sorozattal dolgozunk, akkor egymás után kétszer ne szerepelhessen ugyanaz az elem (hiszen az nem egy jó véges program, amelyik úgy lép egy következő állapotba, hogy nem történt állapotváltozás - ez a megfogalmazáson is érződik).\\
+A negyedik pont a végtelen programra utal: ha egy program futása nem fejeződik be (végtelen ciklus, stb.), akkor ezt a hozzárendelt sorozatban úgy jelzi, hogy egy adott ponttól kezdve nem történik állapotváltozás, folyton ugyan abban az állapotban ragad (pl. $S(4) = <4, 3, 2, 1, 0, 0, 0, 0, 0, 0, ...>$) \\
+
+
+Egy \sprog program hatásrelációja, vagy programfüggvénye az a $p(S) \subseteq A \times A$ reláció, melyre:
+\begin{enumerate}
+	\item $ \mathcal{D}_{p(S)} = \{a \in A | S(a) \subseteq A^* \} $
+	\item $ p(S)(a) = \{ b \in  A | \exists \alpha \in S(a) : \tau(\alpha) = b  \}$
+\end{enumerate}
+ahol $\tau: A^* \rightarrow A; \tau(\alpha) ::= \alpha_{|\alpha|}$, azaz a \textit{tau} függvény egy véges sorozathoz annak utolsó tagját rendeli.
+
+A programfüggvényt tehát csak olyan pontokban definiáljuk, ahol a program \textit{megáll}, azaz véges sorozatot rendel, a hozzárendelési szabály pedig az, ahová a program eljut, tehát az adott sorozatok utolsó eleme.
+
+\subsection{Leggyengébb előfeltétel}
+Érezhető, hogy a fenti definíciókkal történő számolások nagyon nehézzé fogják tenni a későbbiekben a feladatok és az azt megoldó programok közötti kapcsolat megteremtését, ezért bevezetünk egy új fogalmat, a \textit{leggyengébb előfeltétel}t.
+\paragraph{}
+Legyen \sprog program, $R: A \rightarrow \mathbb{L}$ állítás. Az $S$ program $R$ utófeltételhez tartozó \textit{leggyengébb előfeltétele} az az $lf(S,R): A \times \mathbb{L}$ \textbf{függvény}, melyre:
+$$ \lceil lf(S,R) \rceil = \{ A \in \mathcal{D}_{p(S)} | p(S)(a) \subseteq \lceil R \rceil \} $$
+Az \textit{lf} tehát egy olyan függvény, mely pontosan azokhoz a pontokhoz rendel igazat, melyből elindítva az $S$ programot az biztosan megáll, és az összes ilyen állapotban az $R$ tulajdonság teljesül. Magának a függvénynek a definícióját legtöbbször nehéz megadni, de az igazsághalmazát könnyedén kifejezhetjük. Az igazsághalmaz definícióját, a kompozíció és az őskép tulajdonságait felhasználva kapjuk, hogy:
+$$\lceil lf(S,R)\rceil = \lceil R \circ p(S) \rceil.$$
+Az \textit{lf}-et tehát az utófeltételbe helyettesítés módszerével tudjuk kifejezni (ennek bizonyítása megtalálható a \textit{tankönyv}\textsuperscript{\cite{fothi_biblia}} 44-ik oldalán, a 3.1-es definíciónál).
+
+A későbbiekben több alaptulajdonságra is szükségünk lesz, ha az \textit{lf}-fel akarunk számolni. Nézzük ezeket:
+\paragraph{}
+Legyen \sprog{} program, $Q,R: A \rightarrow \mathbb{L}$ állítások. Ekkor:
+\begin{enumerate}
+	\item $lf(S, Hamis) = Hamis$ (csoda kizárásának elve),
+	\item Ha $Q \Rightarrow R$, akkor $lf(S,Q) \Rightarrow lf(S,R)$ (monotonitás),
+	\item $lf(S,Q) \lor lf(S,R) \Rightarrow lf(S, Q\lor R)$ (gyenge additivitás),
+	\item $lf(S,Q) \land lf(S,R) = lf(S, Q\land R)$ (multiplikativitás)
+\end{enumerate}
+A bizonyításokat szintén a jegyzetben lehet olvasni.
+\paragraph{Kiszámítása:}
+Az \textit{lf} kiszámolását a már fentebb említett utófeltételbe helyettesítés módszerével tudjuk megtenni.
+
+Az \textbf{egyszerű értékadás}ok során ez a következőt jelenti:
+$$lf(x := y, R) = R^{x \leftarrow y } $$
+Például az $S = \{x:=3\}, R = (1 \le x \le 5)$ esetben:\\
+$lf(S,R) = lf(\{x:=3\}, (1 \le x \le 5)) = R^{x \leftarrow y} = (1 \le x \le 5)^{x \leftarrow 3} = (1 \le 3 \le 5)$.
+Az $S$ programot tehát olyan állapotokból tudjuk elindítani biztonságosan úgy, hogy $R$-be érkezzen, melyre teljesül az, hogy $1 \le 3 \le 5 \equiv igaz$, azaz tetszőleges pontból indítva helyesen működő programot kaphatunk.
+
+\textbf{Feltételes értékadás} esetén figyelembe kell venni a feltételt is, hiszen ha ez nem teljesül, abban az esetben nem kell az értékadást végrehajtanunk.
+$$lf(\{x:=y, \text{ha } \pi\}, R) = (\pi \rightarrow R^{x \leftarrow y}) \land (\neg \pi \rightarrow R^{SKIP})$$
+
+\textbf{Szimultán értékadás} során egyszerre hajtjuk végre az adott értékadásokat:
+$$lf(\{x_1, ..., x_n := y_1, ..., y_n\}, R) = lf(\{ \mathop{\parallel}_{i=1}^{n} x_i := y_i \}, R) = R^{\substack{ x_1 \leftarrow y_1 \\ ... \\ x_n \leftarrow y_n }}$$
+
+A \textbf{feltételes szimultán értékadás} kiszámításának módja ezek után egyértelműen megállapítható az előzőek alapján:
+$$lf(\{x_1, ..., x_n := y_1, ..., y_n, \text{ha } \pi \}, R) = lf(\{ \mathop{\parallel}_{i=1}^{n} x_i := y_i, \text{ha }\pi \}, R) = $$
+$$= (\pi \rightarrow R^{\substack{ x_1 \leftarrow y_1 \\ ... \\ x_n \leftarrow y_n }}) \land (\neg \pi \rightarrow R^{SKIP})$$
+
 \newpage
 
 \section{Megoldások}
@@ -201,6 +270,9 @@ Az $A \lor B$ állítást úgy fogalmazhatjuk meg, hogy azokat az egész számok
 \bibitem{orsi_jegyzet}
 \raggedright
 dr. Horváth Zoltán: Párhuzamos és elosztott programozás (http://people.inf.elte.hu/hz/parh/jegyzet.ps)
+
+\bibitem{fothi_biblia}
+Fóthi Ákos: Bevezetés a programozáshoz (http://bzsr.web.elte.hu/progmod2/konyv.pdf)
 
 \end{thebibliography}
 \end{document}
