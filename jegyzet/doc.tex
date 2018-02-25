@@ -212,9 +212,9 @@ ahol $\tau: A^* \rightarrow A; \tau(\alpha) ::= \alpha_{|\alpha|}$, azaz a \text
 A hatásrelációt tehát csak olyan pontokban definiáljuk, ahol a program \textit{megáll}, azaz véges sorozatot rendel, a hozzárendelési szabály pedig az, ahová az utasítás eljut, tehát az adott sorozatok utolsó eleme.
 
 
-Az előzőek alapján meg tudjuk az \textit{absztrakt program}ot egy \sprog párként. Ez egy párhuzamos programot jelöl, melynek első tagja ($s_0$) a kezdeti utasítás, ami a program indulásakor hajtódik végre. A második tagja ($\{s_1, s_2, \dots, s_n\}$) \textit{atomi} (vagyis párhuzamos futás során nem akadnak össze, szekvenciális futás eredményét adó) utasítások halmaza, amelyeket valamilyen \textit{feltétlenül pártatlan ütemezés} (kiéheztetés nélkül, azaz egy végrehajtás során minden utasítás végtelen sokszor kerül kiértékelésre) szerint végtelen sokáig értékelünk ki. A programra pedig akkor mondjuk, hogy terminált (befejeződött), ha fixpontba jut, azaz már nem történik állapotváltozás.
+Az \textit{absztrakt program}ot egy \sprog párként tudjuk megadni, ami egy párhuzamos programot takar. Az első tagja ($s_0$) a kezdeti utasítás, ami a program indulásakor hajtódik végre. A második tagja ($\{s_1, s_2, \dots, s_n\}$) pedig \textit{atomi} (vagyis párhuzamos futás során nem akadnak össze, szekvenciális futás eredményét adó) utasítások halmaza. Ezeket valamilyen \textit{feltétlenül pártatlan ütemezés} szerint (kiéheztetés nélkül, azaz az egyes végrehajtások során minden utasítást végtelen sokszor véve) végtelen sokáig futtatunk. A programra pedig akkor mondjuk, hogy terminált (befejeződött), ha fixpontba jut, azaz már nem történik állapotváltozás.
 
-Az egyszerűség kedvéért nézzük erre egy példát:\\
+Nézzünk erre egy egyszerű példát:\\
 Legyen $S = (x := 0, \{x := 2 \cdot x, x := x + 1\})$. Ekkor az alábbi sorozatot ennek egy lehetséges kiértékelésének tekintjük:
 \begin{align*}
 	x &:= 0,	&x &:= x + 1,	&x &:= 2*x,	&x &:= 2*x,	&x &:= x + 1,	&x &:= x + 1,	&&\dots\\
