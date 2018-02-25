@@ -27,6 +27,7 @@ bottom = 25mm]{geometry}
 \setstretch{1.2}
 \begin{document}
 	
+	
 	\begin{titlepage}
 		\vspace*{0cm}
 		\centering
@@ -249,19 +250,55 @@ Az \textit{lf} kiszámolását a már fentebb említett utófeltételbe helyette
 
 Az \textbf{egyszerű értékadás}ok során ez a következőt jelenti:
 $$lf(x := y, R) = R^{x \leftarrow y } $$
-Például az $S = \{x:=3\}, R = (1 \le x \le 5)$ esetben:\\
-$lf(S,R) = lf(\{x:=3\}, (1 \le x \le 5)) = R^{x \leftarrow y} = (1 \le x \le 5)^{x \leftarrow 3} = (1 \le 3 \le 5)$.
-Az $S$ programot tehát olyan állapotokból tudjuk elindítani biztonságosan úgy, hogy $R$-be érkezzen, melyre teljesül az, hogy $1 \le 3 \le 5 \equiv igaz$, azaz tetszőleges pontból indítva helyesen működő programot kaphatunk.
+Például az $s = (x := 3), R = (1 \le x \le 5)$ esetben:\\
+$lf(s, R) = lf(x:=3, (1 \le x \le 5)) = R^{x \leftarrow y} = (1 \le x \le 5)^{x \leftarrow 3} = (1 \le 3 \le 5)$.
+Az $s$ utasítás tehát olyan állapotokban tudjuk biztonságosan végrehajtani úgy, hogy $R$-be érkezzen, melyre teljesül az, hogy $1 \le 3 \le 5 \equiv igaz$, azaz tetszőleges pontból indítva helyesen működő utasítást kaphatunk.
 
 \textbf{Feltételes értékadás} esetén figyelembe kell venni a feltételt is, hiszen ha ez nem teljesül, abban az esetben nem kell az értékadást végrehajtanunk.
 $$lf(\{x:=y, \text{ha } \pi\}, R) = (\pi \rightarrow R^{x \leftarrow y}) \land (\neg \pi \rightarrow R^{SKIP})$$
+Például az $s = (x := -x, ha\ x < 0), R = (x > 0)$ esetben:
+\begin{align*}
+	lf(s, R) = lf((x := -x, ha\ x < 0), x > 0) &= (x < 0 \rightarrow (x > 0)^{x \leftarrow -x}) \land (x \ge 0 \rightarrow x > 0)\\
+	&= (x < 0 \rightarrow -x > 0) \land (x \ge 0 \rightarrow x > 0)
+\end{align*}
+Ekkor az $A \rightarrow B = \neg A \lor B$ logikai szabályt alkalmazva az alábbit kapjuk:
+$$ (x \ge 0 \lor -x > 0) \land (x < 0 \lor x > 0) = (x \ge 0 \lor x < 0) \land (x \neq 0) = (\uparrow) \land (x \neq 0) = (x \neq 0)$$
+Vagyis az $s$ utasítást minden $x \neq 0$ állapotban biztonságosan végre tudjuk hajtani úgy, hogy $R$-be érkezzen.
 
 \textbf{Szimultán értékadás} során egyszerre hajtjuk végre az adott értékadásokat:
 $$lf(\{x_1, ..., x_n := y_1, ..., y_n\}, R) = lf(\{ \mathop{\parallel}_{i=1}^{n} x_i := y_i \}, R) = R^{\substack{ x_1 \leftarrow y_1 \\ ... \\ x_n \leftarrow y_n }}$$
+Például az $s = (x,y := x + 1, y - 1), R = (2 | x + y)$ esetben:
+\begin{align*}
+	lf(s, R) &= lf((x,y := x + 1, y - 1), (2 | x + y)) \\
+		&= (2 | x + y)^{\substack{ x \leftarrow x + 1 \\ y \leftarrow y - 1 }} \\
+		&= (2 | (x + 1) + (y - 1)) = (2 | x + y)
+\end{align*}
+Azaz az $s$ utasítást olyan $x, y$ állapotokban tudjuk biztonságosan végrehajtani úgy, hogy $R$-be érkezzen, melyre teljesül az, hogy $2 | x + y$.
 
 A \textbf{feltételes szimultán értékadás} kiszámításának módja ezek után egyértelműen megállapítható az előzőek alapján:
 $$lf(\{x_1, ..., x_n := y_1, ..., y_n, \text{ha } \pi \}, R) = lf(\{ \mathop{\parallel}_{i=1}^{n} x_i := y_i, \text{ha }\pi \}, R) = $$
 $$= (\pi \rightarrow R^{\substack{ x_1 \leftarrow y_1 \\ ... \\ x_n \leftarrow y_n }}) \land (\neg \pi \rightarrow R^{SKIP})$$
+
+\subsection{Feladatok}\label{lf-feladat}
+A következő példákkal a leggyengébb előfeltétel számítását tudjuk gyakorolni.
+
+\begin{enumerate}
+	\item Legyen $\begin{aligned}[t]
+			S = (SKIP, \{x &:= x \cdot 2, ha\ 2 \nmid x,\\
+				x &:= x + 1, ha\ x < 10\}),
+		\end{aligned}$\\
+		és $R = (2 | x)$. Számoljuk ki az $S$ program $R$-hez tartozó leggyengébb előfeltételét.
+	\item Legyen $\begin{aligned}[t]
+			S = (m,n := 0,0,\ \{m,n &:= m+1, n-1,\\
+				n &:= n + 1, ha\ n < m\}).
+		\end{aligned}$\\
+		Számoljuk ki az $S$ program $R$-hez tartozó leggyengébb előfeltételét.
+		\begin{enumerate}[a)]
+			\item Ha $R = (m = n).$
+			\item Ha $R = (n > m).$
+		\end{enumerate}
+\end{enumerate}
+
 
 \newpage
 
@@ -281,6 +318,74 @@ $$= (\pi \rightarrow R^{\substack{ x_1 \leftarrow y_1 \\ ... \\ x_n \leftarrow y
 		\item $(\forall i: n(i).f \Rightarrow n(i).t) \in inv$
 		\item $n(i).h \vartriangleright \bot$
 	\end{itemize}
+	~\ref{lf-feladat} - \nameref{lf-feladat}
+	\begin{enumerate}
+		\item Ahogy korábban láttuk \ref{lf-feladat} bekezdésben, egy program leggyengébb előfeltétele az utasításai által adott leggyengébb előfeltételek konjugáltja. Az egyszerűség kedvéért nevezzük el az $x := x \cdot 2, ha\ 2 \nmid x$ utasítást $s_1$-nek, az $x := x + 1, ha\ x < 10$ utasítást pedig $s_2$-nek. Ekkor 
+			\begin{align*}
+				lf(s_1, R) &= lf(x := x \cdot 2, ha\ 2 \nmid x;\ (2 | x)) \\
+					&= (2 \nmid x \rightarrow (2 | x)^{x \leftarrow x \cdot 2}) \land (2 | x \rightarrow 2 | x) \\
+					&= (2 \nmid x \rightarrow 2 | x \cdot 2) \land (2 | x \rightarrow 2 | x) \\
+					&\text{Alkalmazva a } A \rightarrow B = \neg A \lor B \text{ szabályt a következőt kapjuk:} \\
+					&= (2 | x \lor 2 | x \cdot 2) \land (2 \nmid x \lor 2 | x) \\
+					&\text{Mivel } A \lor \neg A = \uparrow \text{, valamint egy szám kétszeresét véve osztható lesz} \\
+					&\text{kettővel:} \\
+					&= (2 | x\ \lor \uparrow) \land (\uparrow) \\
+					&= (\uparrow) \land (\uparrow) \\
+					&=\ \uparrow \\
+				lf(s_2, R) &= lf(x := x + 1, ha\ x < 10;\ (2 | x)) \\
+					&= (x < 10 \rightarrow (2 | x)^{x \leftarrow x + 1}) \land (x \ge 10 \rightarrow 2 | x) \\
+					&= (x < 10 \rightarrow 2 | x + 1) \land (x \ge 10 \rightarrow 2 | x) \\
+					&= (x \ge 10 \lor 2 | x + 1) \land (x < 10 \lor 2 | x) \\
+					&\text{Picit tovább alakítva a pedig a következő kifejezést kapjuk:} \\
+					&= (x \ge 10 \lor 2 | x + 1) \land (x < 10 \lor 2 | x) \\
+				lf(S, R) &= lf(s_1, R) \land lf(s_2, R) \\
+					&= (\uparrow) \land ((x \ge 10 \lor 2 | x + 1) \land (x < 10 \lor 2 | x)) \\
+					&\text{Mivel } \uparrow \land\ A = A: \\
+					&= (x \ge 10 \lor 2 | x + 1) \land (x < 10 \lor 2 | x)
+			\end{align*}
+		\item Hasonlóan az előző feladathoz, nevezzük el $m,n := m+1, n-1$ és $n := n + 1, ha\ n < m$ utasításokat rendre $s_1$-nek és $s_2$-nek.
+			\begin{enumerate}[a)]
+				\item $R = (m = n)$
+					\begin{align*}
+						lf(s_1, R) &= lf(m,n := m+1, n-1;\ (m = n)) \\
+							&= (m = n)^{\substack{ m \leftarrow m + 1 \\ n \leftarrow n - 1 }} \\
+							&= (m+1 = n-1) \\
+							&= (m = n-2) \\
+						lf(s_2, R) &= lf(n := n + 1, ha\ n < m;\ (m = n)) \\
+							&= (n < m \rightarrow (m = n)^{\substack{ m \leftarrow m + 1 \\ n \leftarrow n - 1 }}) \land (n \ge m \rightarrow m = n) \\
+							&= (n < m \rightarrow m + 1 = n - 1) \land (n \ge m \rightarrow m = n) \\
+							&= (n \ge m \lor m + 1 = n - 1) \land (n < m \lor m = n) \\
+							&= (n \ge m \lor m = n - 2) \land (n \leq m) \\
+							&\text{Alkalmazva a } (A \lor B) \land C = (A \land C) \lor (B \land C) \text{ szabályt:} \\
+							&= (n \ge m \land n \leq m) \lor (m = n - 2 \land n \leq m) \\
+							&= (n = m)\ \lor \downarrow \\
+							&\text{Mivel } A\ \lor \downarrow = A: \\
+							&= (n = m) \\
+						lf(S, R) &= lf(s_1, R) \land lf(s_2, R) \\
+						&= (m = n-2) \land (n = m) \\
+						&=\ \downarrow
+					\end{align*}
+				\item $R = (m < n)$
+					\begin{align*}
+						lf(s_1, R) &= lf(m,n := m+1, n-1;\ (m < n)) \\
+							&= (m < n)^{\substack{ m \leftarrow m + 1 \\ n \leftarrow n - 1 }} \\
+							&= (m+1 < n-1) \\
+							&= (m+2 < n) \\
+						lf(s_2, R) &= lf(n := n + 1, ha\ n < m;\ (m < n)) \\
+							&= (n < m \rightarrow (m < n)^{\substack{ m \leftarrow m + 1 \\ n \leftarrow n - 1 }}) \land (n \ge m \rightarrow m < n) \\
+							&= (n < m \rightarrow m + 1 < n - 1) \land (n \ge m \rightarrow m < n) \\
+							&= (n \ge m \lor m + 1 < n - 1) \land (n < m \lor m < n) \\
+							&= (n \ge m \lor m + 2 < n) \land (n \neq m) \\
+							&= (n \ge m) \land (n \neq m) \\
+							&= (n > m) \\
+						lf(S, R) &= lf(s_1, R) \land lf(s_2, R) \\
+						&= (m+2 < n) \land (n > m) \\
+						&= (m+2 < n) \land (m < n) \\
+						&= (m+2 < n)
+					\end{align*}
+			\end{enumerate}
+	\end{enumerate}
+
 
 \begin{thebibliography}{9}
 \bibitem{orsi_jegyzet}
