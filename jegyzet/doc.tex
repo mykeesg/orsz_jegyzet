@@ -20,7 +20,8 @@ bottom = 25mm]{geometry}
 
 
 \newcommand{\lfsih}[1] {$\lceil lf(S,#1) \rceil$}
-\newcommand{\sprog}{$S \subseteq A \times A^{**} $}
+\newcommand{\sut}{$s \subseteq A \times A^{**}$ }
+\newcommand{\sprog}{$S = (s_0, \{s_1, s_2, \dots, s_n\})$ }
 
 
 \setstretch{1.2}
@@ -122,8 +123,8 @@ Ahhoz, hogy a későbbiekben biztos módon számolhassunk programokkal , elkerü
 Legyenek $A$ és $B$ tetszőleges halmazok. $A$ és $B$ \textit{direkt-}, vagy \textit{Descartes}-szorzatán azt a halmazt értjük, melyben olyan párok találhatóak, melynek első eleme $A$-, második eleme pedig $B$-beli.
 $$A \times B ::= \{ (a,b) | a \in A \text{ és } b \in B \}$$
 Jelölje $r \subseteq A \times B$ azt a bináris relációt, mely $A$ elemeihez rendel értékeket a $B$ halmazból ($A$ és $B$ tetszőleges halmazok). A reláció elemeit $(a,b) \in r $ módon fogjuk jelölni.
-$$ \text{Az } r \text{ reláció értelmezési tartománya: } \mathcal{D}_r = \{a \in A | \exists b \in B: (a,b) \in r \} \subseteq A$$
-$$ \text{Az } r \text{ reláció értékkészlete: } \mathcal{R}_r = \{b \in B | \exists a \in A: (a,b) \in r \} \subseteq B$$
+$$ \text{Az } r \text{ reláció értelmezési tartománya: } \mathcal{D}_r ::= \{a \in A | \exists b \in B: (a,b) \in r \} \subseteq A$$
+$$ \text{Az } r \text{ reláció értékkészlete: } \mathcal{R}_r ::= \{b \in B | \exists a \in A: (a,b) \in r \} \subseteq B$$
 $$\ r(a) \text{ jelölje azt a halmazt, melynek elemei: } \{b \in B | (a,b) \in r \} $$
 
 Világos, hogy az értelmezési tartományban olyan elemek vannak, amikhez rendel valamit $r$, míg az értékkészletben olyanokat találhatunk, amik valamilyen elemhez hozzá lettek rendelve. Egy elem képe a hozzá rendelt elemek halmazából áll elő.
@@ -166,7 +167,7 @@ Legyenek $P$, $Q \subseteq A \times \mathbb{L}$, ekkor:
 	\item $ \lceil P \land Q \rceil = \lceil P \rceil \cap \lceil Q \rceil $
 	\item $ \lceil P \lor Q \rceil = \lceil P \rceil \cup \lceil Q \rceil  $
 	\item $	\lceil \neg P \rceil = A \setminus \lceil P \rceil  $
-	\item $\lceil P \Rightarrow Q \rceil = \lceil \neg P \lor Q \rceil = (A \setminus P) \cup \lceil Q \rceil $
+	\item $\lceil P \rightarrow Q \rceil = \lceil \neg P \lor Q \rceil = (A \setminus \lceil P \rceil) \cup \lceil Q \rceil $
 	\item $ P \Rightarrow Q = \lceil P \rceil \subseteq \lceil Q \rceil $
 \end{itemize}
 
@@ -187,40 +188,55 @@ Röviden tekintsük át, hogy a Fóthi\textsuperscript{\cite{fothi_biblia}}-Horv
 
 Jelölje $A^*$ az $A$ elemeiből képzett véges, $A^\infty$ pedig a végtelen sorozatokat. A későbbiekben $A^{**}$ jelenti az $A^* \cup A^{\infty}$ halmazt, azaz a véges és végtelen sorozatok halmazát. Ha alaphalmaznak a természetes számokat választjuk, akkor az $<1, 5, 3, 2> \in A^*$ egy véges, míg az $<1, 2, 3, 4, ...> \in A^{\infty}$ végtelen sorozatot jelöl.\\
 
-\textit{Utasítás} vagy \textit{program} alatt egy olyan \sprog relációt értünk, melyre:
+\textit{Utasítás} alatt egy olyan \sut relációt értünk, melyre:
 \begin{enumerate}
-	\item $\mathcal{D}_S = A$
-	\item $\forall a \in A : \forall \alpha \in S(a) : |\alpha|\ne 0 \land  \alpha_1 = a $
-	\item $(\alpha \in \mathcal{R}_S \land \alpha \in A^*  ) \Rightarrow (\forall i   (1 \le i < |\alpha|): \alpha_i \ne \alpha_{i+1} )$
-	\item $(\alpha \in \mathcal{R}_S \land \alpha \in A^{\infty}) \Rightarrow (\forall i \in \mathbb{N} (\alpha_{i} = \alpha_{i+1} \rightarrow (\forall k \in \mathbb{N^+}): \alpha_{i} = \alpha_{i+k})))$
+	\item $\mathcal{D}_s = A$
+	\item $\forall a \in A : \forall \alpha \in s(a) : |\alpha|\ne 0 \land  \alpha_1 = a $
+	\item $(\alpha \in \mathcal{R}_s \land \alpha \in A^*  ) \Rightarrow (\forall i (1 \le i < |\alpha|): \alpha_i \ne \alpha_{i+1} )$
+	\item $(\alpha \in \mathcal{R}_s \land \alpha \in A^{\infty}) \Rightarrow (\forall i \in \mathbb{N}: (\alpha_{i} = \alpha_{i+1} \rightarrow (\forall k \in \mathbb{N^+}: \alpha_{i} = \alpha_{i+k}))$
 \end{enumerate}
-A fenti definíció a \textit{működés} fogalmát próbálja absztrakt módon szemléltetni. A négy pont jól jellemzi a programot: elsőként szeretnénk, ha a program minden állapottér-beli pontban értelmezve lenne (azaz a program mindenhonnan el tud indulni).\\
+A fenti definíció a \textit{működés} fogalmát próbálja absztrakt módon szemléltetni. A négy pont jól jellemzi az utasítást: elsőként szeretnénk, ha az utasítás minden állapottér-beli pontban értelmezve lenne (azaz az utasítás mindenhonnan el tud indulni).\\
 Második pontban azt fogalmazzuk meg, hogy egy sorozat a működése teljes történetét írja le, kezdve a kiindulási állapottal.\\
-A harmadik pontunk a \textit{redukáltságra} vonatkozik: ha véges hosszú sorozattal dolgozunk, akkor egymás után kétszer ne szerepelhessen ugyanaz az elem (hiszen az nem egy jó véges program, amelyik úgy lép egy következő állapotba, hogy nem történt állapotváltozás - ez a megfogalmazáson is érződik).\\
-A negyedik pont a végtelen programra utal: ha egy program futása nem fejeződik be (végtelen ciklus, stb.), akkor ezt a hozzárendelt sorozatban úgy jelzi, hogy egy adott ponttól kezdve nem történik állapotváltozás, folyton ugyan abban az állapotban ragad (pl. $S(4) = <4, 3, 2, 1, 0, 0, 0, 0, 0, 0, ...>$) \\
+A harmadik pontunk a \textit{redukáltságra} vonatkozik: ha véges hosszú sorozattal dolgozunk, akkor egymás után kétszer ne szerepelhessen ugyanaz az elem (hiszen az nem egy jó véges utasítás, amelyik úgy lép egy következő állapotba, hogy nem történt állapotváltozás - ez a megfogalmazáson is érződik).\\
+A negyedik pont a végtelen utasításra utal: ha egy utasítás futása nem fejeződik be (végtelen ciklus, stb.), akkor ezt a hozzárendelt sorozatban úgy jelzi, hogy egy adott ponttól kezdve nem történik állapotváltozás, folyton ugyan abban az állapotban ragad (pl. $s(4) = <4, 3, 2, 1, 0, 0, 0, 0, 0, 0, ...>$) \\
 
 
-Egy \sprog program hatásrelációja, vagy programfüggvénye az a $p(S) \subseteq A \times A$ reláció, melyre:
+Egy \sut utasítás \textit{hatásreláció}ja az a $p(s) \subseteq A \times A$ reláció, melyre:
 \begin{enumerate}
-	\item $ \mathcal{D}_{p(S)} = \{a \in A | S(a) \subseteq A^* \} $
-	\item $ p(S)(a) = \{ b \in  A | \exists \alpha \in S(a) : \tau(\alpha) = b  \}$
+	\item $ \mathcal{D}_{p(s)} = \{a \in A | s(a) \subseteq A^* \} $
+	\item $ p(s)(a) = \{ b \in  A | \exists \alpha \in s(a) : \tau(\alpha) = b  \}$
 \end{enumerate}
 ahol $\tau: A^* \rightarrow A; \tau(\alpha) ::= \alpha_{|\alpha|}$, azaz a \textit{tau} függvény egy véges sorozathoz annak utolsó tagját rendeli.
 
-A programfüggvényt tehát csak olyan pontokban definiáljuk, ahol a program \textit{megáll}, azaz véges sorozatot rendel, a hozzárendelési szabály pedig az, ahová a program eljut, tehát az adott sorozatok utolsó eleme.
+A hatásrelációt tehát csak olyan pontokban definiáljuk, ahol a program \textit{megáll}, azaz véges sorozatot rendel, a hozzárendelési szabály pedig az, ahová az utasítás eljut, tehát az adott sorozatok utolsó eleme.
+
+
+Az előzőek alapján meg tudjuk az \textit{absztrakt program}ot egy \sprog párként. Ez egy párhuzamos programot jelöl, melynek első tagja ($s_0$) a kezdeti utasítás, ami a program indulásakor hajtódik végre. A második tagja ($\{s_1, s_2, \dots, s_n\}$) \textit{atomi} (vagyis párhuzamos futás során nem akadnak össze, szekvenciális futás eredményét adó) utasítások halmaza, amelyeket valamilyen \textit{feltétlenül pártatlan ütemezés} (kiéheztetés nélkül, azaz egy végrehajtás során minden utasítás végtelen sokszor kerül kiértékelésre) szerint végtelen sokáig értékelünk ki. A programra pedig akkor mondjuk, hogy terminált (befejeződött), ha fixpontba jut, azaz már nem történik állapotváltozás.
+
+Az egyszerűség kedvéért nézzük erre egy példát:\\
+Legyen $S = (x := 0, \{x := 2 \cdot x, x := x + 1\})$. Ekkor az alábbi sorozatot ennek egy lehetséges kiértékelésének tekintjük:
+\begin{align*}
+	x &:= 0,	&x &:= x + 1,	&x &:= 2*x,	&x &:= 2*x,	&x &:= x + 1,	&x &:= x + 1,	&&\dots\\
+	&0,	&&1,	&&2,	&&4, &&5,	&&6,	&&\dots
+\end{align*}
+
 
 \subsection{Leggyengébb előfeltétel}
 Érezhető, hogy a fenti definíciókkal történő számolások nagyon nehézzé fogják tenni a későbbiekben a feladatok és az azt megoldó programok közötti kapcsolat megteremtését, ezért bevezetünk egy új fogalmat, a \textit{leggyengébb előfeltétel}t.
 \paragraph{}
-Legyen \sprog program, $R: A \rightarrow \mathbb{L}$ állítás. Az $S$ program $R$ utófeltételhez tartozó \textit{leggyengébb előfeltétele} az az $lf(S,R): A \times \mathbb{L}$ \textbf{függvény}, melyre:
-$$ \lceil lf(S,R) \rceil = \{ A \in \mathcal{D}_{p(S)} | p(S)(a) \subseteq \lceil R \rceil \} $$
-Az \textit{lf} tehát egy olyan függvény, mely pontosan azokhoz a pontokhoz rendel igazat, melyből elindítva az $S$ programot az biztosan megáll, és az összes ilyen állapotban az $R$ tulajdonság teljesül. Magának a függvénynek a definícióját legtöbbször nehéz megadni, de az igazsághalmazát könnyedén kifejezhetjük. Az igazsághalmaz definícióját, a kompozíció és az őskép tulajdonságait felhasználva kapjuk, hogy:
-$$\lceil lf(S,R)\rceil = \lceil R \circ p(S) \rceil.$$
-Az \textit{lf}-et tehát az utófeltételbe helyettesítés módszerével tudjuk kifejezni (ennek bizonyítása megtalálható a \textit{tankönyv}\textsuperscript{\cite{fothi_biblia}} 44-ik oldalán, a 3.1-es definíciónál).
+Legyen \sut utasítás, $R: A \rightarrow \mathbb{L}$ állítás. Az $s$ utasítás $R$ utófeltételhez tartozó \textit{leggyengébb előfeltétele} az az $lf(s,R): A \rightarrow \mathbb{L}$ \textbf{függvény}, melyre:
+$$ \lceil lf(s,R) \rceil = \{ A \in \mathcal{D}_{p(s)} | p(s)(a) \subseteq \lceil R \rceil \}. $$
+Az \textit{lf} tehát egy olyan függvény, mely pontosan azokhoz a pontokhoz rendel igazat, melyből elindítva az $s$ utasítást az biztosan megáll, és az összes ilyen állapotban az $R$ tulajdonság teljesül. Magának a függvénynek a definícióját legtöbbször nehéz megadni, de az igazsághalmazát könnyedén kifejezhetjük. Az igazsághalmaz definícióját, a kompozíció és az őskép tulajdonságait felhasználva kapjuk, hogy:
+$$\lceil lf(s,R)\rceil = \lceil R \circ p(s) \rceil.$$
+Az \textit{lf}-et tehát az utófeltételbe helyettesítés módszerével tudjuk kifejezni (ennek bizonyítása megtalálható a \textit{tankönyv}\textsuperscript{\cite{fothi_biblia}} 44-ik oldalán, a 3.1-es definíciónál). 
+
+\par Mivel a leggyengébb előfeltételt nem csak utasításokra, hanem programokra is ki szeretnénk tudni számolni, a fenti definíciót picit általánosítani kell. Tehát legyen \sprog program, $R: A \rightarrow \mathbb{L}$ állítás. Ekkor az $S$ program $R$ utófeltélhez tartozó \textit{leggyengébb előfeltétele} az egyes utasításai által adott leggyengébb előfeltételek konjugáltja lesz:
+$$ lf(S, R) = \bigwedge_{i=1}^n lf(s_i, R). $$
+
 
 A későbbiekben több alaptulajdonságra is szükségünk lesz, ha az \textit{lf}-fel akarunk számolni. Nézzük ezeket:
 \paragraph{}
-Legyen \sprog{} program, $Q,R: A \rightarrow \mathbb{L}$ állítások. Ekkor:
+Legyen \sprog program, $Q,R: A \rightarrow \mathbb{L}$ állítások. Ekkor:
 \begin{enumerate}
 	\item $lf(S, Hamis) = Hamis$ (csoda kizárásának elve),
 	\item Ha $Q \Rightarrow R$, akkor $lf(S,Q) \Rightarrow lf(S,R)$ (monotonitás),
