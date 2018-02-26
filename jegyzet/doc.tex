@@ -17,7 +17,14 @@ bottom = 25mm]{geometry}
 \usepackage{setspace} %spacing
 \usepackage{enumerate} %enum as a)b)c)
 \usepackage{nameref} %referencing chapters with names
+\usepackage{tikz}
 
+
+\usetikzlibrary{arrows, calc, fit, positioning, shapes}
+
+\definecolor{myblue}{RGB}{56, 94, 141}
+\definecolor{mygreen}{RGB}{60, 179, 113}
+\definecolor{myred}{RGB}{220, 20, 60}
 
 \newcommand{\lfsih}[1] {$\lceil lf(S,#1) \rceil$}
 \newcommand{\sut}{$s \subseteq A \times A^{**}$ }
@@ -150,6 +157,52 @@ A $H \subseteq B $ halmaz $R$ reláció szerinti \textit{ős}képe:
 $$ R^{-1}(H) ::= \{ a \in A | R(a) \subseteq H \}$$
 
 Meggondolva látható, hogy az \textit{inverzkép} megengedőbb, hisz csak annyit kér, hogy egy adott elemhez \textit{létezzen} $H$-beli elem az $R$ hozzárendelésben, az \textit{őskép} viszont megköveteli, hogy \textit{minden} ilyen elem a $H$ halmazban legyen.
+
+\begin{figure}[!ht]
+	\centering
+	\begin{tikzpicture}[line width=1pt,>=latex]
+	\sffamily
+	\node (a1) {a};
+	\node[below=of a1] (a3) {c};
+	\node[left=of $(a1)!0.7!(a3)$] (a2) {b};
+	\node[below=1.5cm of a2] (a4) {d};
+	\node[below=of a3] (a5) {e};
+	
+	\node[right=6cm of a1] (b1) {1};
+	\node[below=of b1] (b3) {3};
+	\node[left=of $(b1)!0.7!(b3)$] (b2) {2};
+	\node[below=of b2] (b4) {4};
+	\node[below=of b3] (b5) {5};
+	
+	\node[shape=ellipse, draw=black, minimum size=4cm, fit={(a1) (a2) (a4) (a5)}] (A) {};
+	\node[shape=ellipse, draw=black, minimum size=3cm, fit={(b1) (b2) (b4) (b5)}] (B) {};
+	
+	\node[below=0cm of A,font=\Large\bfseries] {$A$};
+	\node[below=0cm of B,font=\Large\bfseries] {$B$};
+	
+	
+	\draw[->,myblue] (a1) -- (b1.175);
+	\draw[->,myblue] (a1) -- (b2.160);
+	\draw[->,myblue] (a2) -- (b2);
+	\draw[->,myblue] (a3) -- (b3);
+	\draw[->,myblue] (a5) -- (b4);
+	
+	\node[below=1.5cm of $(A)!0.5!(B)$,font=\color{myblue}\Large\bfseries] {$R$};
+	
+	
+	\node[shape=ellipse, draw=mygreen, fit={(b2) (b3)}] (H) {};
+	\node[shape=ellipse, draw=mygreen, fit={(a2) (a3)}] (Ros) {};
+	\draw[rotate=-45, myred] ($(a1)!0.8!(Ros)$) ellipse (1.5cm and 1.7cm);
+	
+	\node[right=0cm of H,font=\color{mygreen}\Large\bfseries] {$H$};
+	\node[left=0.5cm of Ros,font=\color{mygreen}\Large\bfseries] {$R^{-1}(H)$};
+	\node[above=0.5cm of a1] (align1) {};
+	\node[right=0.5cm of align1,font=\color{myred}\Large\bfseries] {$R^{(-1)}(H)$};
+	
+	\end{tikzpicture}
+	\caption{Nézzünk egy példát a korábban említett fogalmakra. Legyen $A=\{a, b, c, d, e\}$ és $B=\{1, 2, 3, 4, 5\}$ halmazok, valamint $R \subseteq A \times B, R=\{(a,1), (a,2), (b, 2), (c, 3), (e, 4)\}$ reláció. Ekkor $R$ \textit{értelmezési tartománya} $\mathcal{D}_R=\{a, b, c, e\}$, \textit{értékkészlete} pedig $\mathcal{R}_R=\{1,2,3,4\}$. Továbbá legyen $H \subseteq B, H=\{2, 3\}$. Ekkor a $H$ halmaz $R$ reláció szerinti \textit{ősképe} $R^{-1}(H)=\{b, c\}$,  \textit{inverzképe} pedig $R^{(-1)}(H)=\{a,b,c\}$. Itt jól látszik, hogy az \textit{inverzkép} megengedőbb, mint az \textit{őskép}, hiszen $R^{-1}(H) \subseteq R^{(-1)}(H) = \{b, c\} \subseteq \{a,b,c\}$.}
+	\label{fig:halmazok}
+\end{figure}
 
 Legyen $R \subseteq A \times \mathbb{L}$ logikai reláció, $R$ igazsághalmaza ekkor:
 $$  \lceil R \rceil ::= R^{-1}(\{igaz\}) \text{ azaz: } \lceil R \rceil = \{a \in \mathcal{D}_R | R(a) \subseteq \{igaz\} \} $$
