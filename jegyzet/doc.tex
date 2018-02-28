@@ -17,7 +17,8 @@ bottom = 25mm]{geometry}
 \usepackage{setspace} %spacing
 \usepackage{enumerate} %enum as a)b)c)
 \usepackage{nameref} %referencing chapters with names
-\usepackage{tikz}
+\usepackage{tikz} %set drawings
+\usepackage{proof} %unless proofs
 
 
 \usetikzlibrary{arrows, calc, fit, positioning, shapes}
@@ -277,10 +278,12 @@ Legyen $S = (x := 0, \{x := 2 \cdot x, x := x + 1\})$. Ekkor az alábbi sorozato
 
 \subsection{Leggyengébb előfeltétel}
 Érezhető, hogy a fenti definíciókkal történő számolások nagyon nehézzé fogják tenni a későbbiekben a feladatok és az azt megoldó programok közötti kapcsolat megteremtését, ezért bevezetünk egy új fogalmat, a \textit{leggyengébb előfeltétel}t.
+
 \paragraph{}
 Legyen \sut utasítás, $R: A \rightarrow \mathbb{L}$ állítás. Az $s$ utasítás $R$ utófeltételhez tartozó \textit{leggyengébb előfeltétele} az az $lf(s,R): A \rightarrow \mathbb{L}$ \textbf{függvény}, melyre:
-$$ \lceil lf(s,R) \rceil = \{ A \in \mathcal{D}_{p(s)} | p(s)(a) \subseteq \lceil R \rceil \}. $$
-Az \textit{lf} tehát egy olyan függvény, mely pontosan azokhoz a pontokhoz rendel igazat, melyből elindítva az $s$ utasítást az biztosan megáll, és az összes ilyen állapotban az $R$ tulajdonság teljesül. Magának a függvénynek a definícióját legtöbbször nehéz megadni, de az igazsághalmazát könnyedén kifejezhetjük. Az igazsághalmaz definícióját, a kompozíció és az őskép tulajdonságait felhasználva kapjuk, hogy:
+$$ \lceil lf(s,R) \rceil = \{ a \in \mathcal{D}_{p(s)} | p(s)(a) \subseteq \lceil R \rceil \}. $$
+\par Az \textit{lf} tehát egy olyan függvény, mely pontosan azokhoz a pontokhoz rendel igazat, melyből elindítva az $s$ utasítást az biztosan megáll, és az összes ilyen állapotban az $R$ tulajdonság teljesül.
+Magának a függvénynek a definícióját legtöbbször nehéz megadni, de az igazsághalmazát könnyedén kifejezhetjük. Az igazsághalmaz definícióját, a kompozíció és az őskép tulajdonságait felhasználva kapjuk, hogy:
 $$\lceil lf(s,R)\rceil = \lceil R \circ p(s) \rceil.$$
 Az \textit{lf}-et tehát az utófeltételbe helyettesítés módszerével tudjuk kifejezni (ennek bizonyítása megtalálható a \textit{tankönyv}\textsuperscript{\cite{fothi_biblia}} 44-ik oldalán, a 3.1-es definíciónál). 
 
@@ -298,6 +301,59 @@ Legyen \sprog program, $Q,R: A \rightarrow \mathbb{L}$ állítások. Ekkor:
 	\item $lf(S,Q) \land lf(S,R) = lf(S, Q\land R)$ (multiplikativitás)
 \end{enumerate}
 A bizonyításokat szintén a jegyzetben lehet olvasni.
+
+\begin{figure}[!ht]
+	\centering
+	\begin{tikzpicture}[line width=1pt,>=latex]
+	
+	%balhalmaz
+	\sffamily
+	\node (a1) {a};
+	\node[below=of a1] (a3) {c};
+	\node[left=of $(a1)!0.7!(a3)$] (a2) {b};
+	\node[below=1.5cm of a2] (a4) {d};
+	\node[below=of a3] (a5) {e};
+	
+	%jobboldali halmaz elemei
+	\node[right=6cm of a1] (b1) {e};
+	\node[below=of b1] (b3) {b};
+	\node[left=of $(b1)!0.7!(b3)$] (b2) {a};
+	\node[below=of b2] (b4) {c};
+	\node[below=of b3] (b5) {d};
+	
+	\node[shape=ellipse, draw=black, minimum size=3.5cm, fit={(a1) (a2) (a4) (a5)}] (A) {};
+	\node[shape=ellipse, draw=black, minimum size=3.5cm, fit={(b1) (b2) (b4) (b5)}] (A2) {};
+	
+	%halmazcimke
+	\node[below=0cm of A,font=\Large\bfseries] {$A$};
+	\node[below=0cm of A2,font=\Large\bfseries] {$A$};
+	
+	
+	%hozzárendelések a két halmaz között
+	\draw[->,myblue] (a1) -- (b1.175);
+	\draw[->,myblue] (a1) -- (b2.160);
+	\draw[->,myblue] (a2) -- (b2);
+	\draw[->,myblue] (a3) -- (b3);
+	\draw[->,myblue] (a5) -- (b4);
+	
+	%nyílra írt szöveg
+	\node[below=1.5cm of $(A)!0.5!(B)$,font=\color{myblue}\Large\bfseries] {$p(s)$};
+	
+	
+	\node[shape=ellipse, draw=mygreen, fit={(a2) (a3)}] (LfsRih) {};
+	\node[shape=ellipse, draw=myred, fit={(b2) (b3)}] (Rih) {};
+	
+	%lf(s,R) ih.
+	\node[left=0.5cm of LfsRih,font=\color{mygreen}\Large\bfseries] { \lfsih{R} };	
+	%R ih
+	\node[right=0.5cm of Rih,font=\color{myred}\Large\bfseries] {$\lceil R \rceil$};
+	
+	
+	\end{tikzpicture}
+	\caption{Legyen $A = \{a,b,c,d,e\}$ halmaz és $p(s) := \{(a,a), (a,e), (b,a), (c,b), (e,c) \} $ hatásreláció, $\lceil R \rceil = \{a,b\}$. $lf(s,R)$ ekkor azokban a pontokban lesz igaz, melyben $p(s)$ értelmezve van és minden ezekhez rendelt elem $R$ igazsághalmazában található. Végiggondolva tehát \lfsih{R} ekkor $=\{b,c\}$.}
+	\label{fig:lfsrzemleltetes}
+\end{figure}
+
 \paragraph{Kiszámítása:}
 Az \textit{lf} kiszámolását a már fentebb említett utófeltételbe helyettesítés módszerével tudjuk megtenni.
 
@@ -352,6 +408,57 @@ A következő példákkal a leggyengébb előfeltétel számítását tudjuk gya
 		\end{enumerate}
 \end{enumerate}
 
+
+\section{konzultáció}
+\subsection{Gyakorlás}
+\paragraph{}Először gyakoroljunk pár további \textit{lf} számolást.\\
+\begin{enumerate}
+	\item  Legyen $\begin{aligned}[t]
+			s &= \{x := -x, \text{ha } x>0\}, \text{ és}\\
+			R &= (x>1).\\
+			lf(s,R) &= ? \\
+			 \\
+			\lceil lf(s,R) \rceil &= (x>0 \rightarrow (x>1)^{x \leftarrow -x}) \land (x \le 0 \rightarrow x > 1) \\
+			&= (x>0 \rightarrow -x>1 ) \land (x \le 0 \rightarrow x > 1) \\
+			&= (x \le 0 \lor -x > 1) \land (x > 0 \lor x > 1) \\
+			&= (x \le 0 \lor x < 1) \land (x>0) \\
+			&= (x \le 0) \land (x>0) \equiv Hamis.
+			\end{aligned}$\\
+		Átgondolva mit is akartunk kiszámolni, milyen állapotból indulva teljesíthető az a követelmény, hogy $(x>1)$, ha a programunk a pozitív számokon előjelet vált, a negatívakat (és nullát) pedig nem változtatja?\\
+		Ha pozitív bemenetet kap, akkor negatívat csinál belőle, negatívakra pedig nem csinál semmit, tehát sehogy sem tudjuk elérni, hogy tetszőleges bemenetre elérjünk a kívánt állapotba, ezért az azonosan $Hamis$ az eredmény.
+	\item Legyen $\begin{aligned}[t]
+	S = (SKIP, \{x&:=0, \text{ ha } y \ne 0, \\
+				x&:=x*z, \text{ ha } z = 0\})\\
+				R &= (x=0)\\
+	lf(S,R) &= ? \dots \#magic\\
+	lf(S,R) &= (x=0) \lor (y \ne 0 \land z=0)\\
+	%TODO megoldást beírni.
+	\end{aligned}$\\
+\end{enumerate}
+
+\subsection{Stabilitási tulajdonság}
+Biztonsági tulajdonságot már néztünk a feladatok kapcsán, ám utasításokra (és programokra) is szeretnénk ilyet definiálni.
+$$\text{Legyenek }P,Q: A \rightarrow \mathbb{L} \text{ állítások, és } s \subseteq A \times A^{**} \text{ utasítás.}$$
+$$P \vartriangleright_s Q ::= (P \land \neg Q) \Rightarrow lf(s, P \lor Q)$$
+A $P$ állapotot az utasítás ekkor \textit{ha} elhagyja, akkor ezt csak $Q$-n keresztül teheti meg.
+%kéne valami ábra a háromszögről ide
+A \textit{háromszögre} fontos néhány tulajdonságot megjegyezni, melyet a definíció alapján igazolhatunk.
+
+
+\begin{itemize}
+	\item $P \vartriangleright_s P = P \land \neg P \Rightarrow lf(s,P \lor P) = \downarrow \Rightarrow lf(s,P) = \uparrow \lor lf(s,P) = \uparrow$
+	\item $P \vartriangleright_s \neg P = P \land P \Rightarrow lf(s,P \lor \neg P) = P \Rightarrow lf(s,Igaz) = \uparrow$
+	\item $Igaz \vartriangleright_s P = Igaz \land \neg P \Rightarrow lf(s,Igaz \lor P) = \neg P \Rightarrow lf(s,Igaz) = \uparrow$
+	\item $Hamis \vartriangleright_s P = Hamis \land \neg P \Rightarrow lf(s, Hamis \lor P) = Hamis \Rightarrow lf(s,P) = \uparrow$
+	\item $P \vartriangleright_s Igaz = P \land Hamis \Rightarrow lf(s,P \lor Igaz) = Hamis \Rightarrow lf(s,Igaz) = \uparrow$
+	
+\end{itemize}
+Fontos megjegyezni, hogy általános esetben a $P \vartriangleright_s Hamis$ nem teljesül.\\
+$P \vartriangleright_s Hamis = P \land Igaz \Rightarrow lf(s,P \lor Hamis) = P \Rightarrow lf(s,P)$, de erről nem tudunk tetszőleges program és állítás esetén semmit garantálni.\\
+Egy példa erre, mikor nem teljesül:\\
+$s = (x := x+1) \text{ és } P = (2|x) \\
+P \vartriangleright_s Hamis = P \Rightarrow lf(s,P) = (2|x) \Rightarrow lf(x:=x+1, 2|x) = (2|x) \Rightarrow (2|x)^{x \leftarrow x+1} = (2|x) \Rightarrow (2|x+1) $, ami nyilvánvaló ellentmondás, hiszen ha egy szám páros, akkor a nála eggyel nagyobb szám nem lehet szintén páros (mivel az páratlan).
+\paragraph{}Abban az esetben azonban, \textit{ha} $P \vartriangleright_s Hamis$ teljesül, akkor azt mondjuk, hogy: $P stabil_s$, avagy $s$ rendelkezik a $P$ stabil tulajdonsággal, azaz $P$-ből nem tud kivezetni a program. (Triviálisan stabil tulajdonság az $Igaz$, hiszen $Igaz \Rightarrow lf(s,Igaz)$ tetszőleges utasításra teljesül.)
 
 \newpage
 
