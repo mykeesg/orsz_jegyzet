@@ -513,7 +513,7 @@ $s = (x := x+1) \text{ és } P = (2|x) \\
 P \vartriangleright_s Hamis = P \Rightarrow lf(s,P) = (2|x) \Rightarrow lf(x:=x+1, 2|x) = (2|x) \Rightarrow (2|x)^{x \leftarrow x+1} = (2|x) \Rightarrow (2|x+1) $, ami nyilvánvaló ellentmondás, hiszen ha egy szám páros, akkor a nála eggyel nagyobb szám nem lehet szintén páros (mivel az páratlan).
 \paragraph{}Abban az esetben azonban, \textit{ha} $P \vartriangleright_s Hamis$ teljesül, akkor azt mondjuk, hogy $s$ rendelkezik a $P$ stabil tulajdonsággal, azaz $P$-ből nem tud kivezetni a program. Jelölésünk erre: $P stabil_s$ (triviálisan stabil tulajdonság az $Igaz$, hiszen $Igaz \Rightarrow lf(s,Igaz)$ tetszőleges utasításra teljesül).
 
-\paragraph{}A háromszög azonban nem tranzitív, azaz $ P \vartriangleright_s Q \text{ és } Q \vartriangleright_s R$-re általában \textbf{nem igaz}, hogy $P \vartriangleright_s R$.
+A háromszög azonban nem tranzitív, azaz $ P \vartriangleright_s Q \text{ és } Q \vartriangleright_s R$-re általában \textbf{nem igaz}, hogy $P \vartriangleright_s R$.
 
 
 \paragraph{Feladat}
@@ -540,9 +540,10 @@ s2: lf(x:=x+1, \text { ha } x\ge50 &, (2|x \lor x\ge50) ) = \\
 =(x<50 \lor 2|x+1 \lor x\ge49) &\land (x\ge50 \lor 2|x \lor x\ge50)\\
 =(\uparrow) &\land (2|x \lor x\ge50)\\
 \text{A két eredményt éselve: } lf(S,P\lor Q) &= lf(s_1,P\lor Q) \land (s_2, P \lor Q)\\
-=(x\ge48 \lor 2|x) \land (x\ge48 \lor 2|x) &= 2|x \lor x\ge50\\
-P\land \neg Q &\Rightarrow lf(S,P\lor Q) =\\
-(2|x \land x<50) &\Rightarrow (2|x \lor x\ge50) \text{ pedig igaz.}
+=(x\ge48 \lor 2|x) \land (x\ge50 \lor 2|x) &= 2|x \lor x\ge50\\
+P\land \neg Q &\Rightarrow lf(S,P\lor Q) \text{ behelyettesítve ekkor:}\\
+(2|x \land x<50) &\Rightarrow (2|x \lor x\ge50) \text{ pedig igaz }2|x\text{ miatt,}\\
+\text{hiszen ha }2|x \text{ igaz a bal oldalon}&, \text{ akkor a jobb oldal is igaz.}
 \end{aligned}
 $
 \paragraph{}Háromszög esetén szerencsére lehetőségünk van egyszerűsítések használatára, mellyel valamennyire megkönnyíthetjük a számolást.
