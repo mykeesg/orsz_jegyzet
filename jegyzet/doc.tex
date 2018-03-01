@@ -444,7 +444,57 @@ Biztonsági tulajdonságot már néztünk a feladatok kapcsán, ám utasítások
 $$\text{Legyenek }P,Q: A \rightarrow \mathbb{L} \text{ állítások, és } s \subseteq A \times A^{**} \text{ utasítás.}$$
 $$P \vartriangleright_s Q ::= (P \land \neg Q) \Rightarrow lf(s, P \lor Q)$$
 A $P$ állapotot az utasítás ekkor \textit{ha} elhagyja, akkor ezt csak $Q$-n keresztül teheti meg.
-%kéne valami ábra a háromszögről ide
+
+\begin{figure}[!ht]
+	\centering
+	\begin{tikzpicture}[line width=1pt,>=latex]
+	
+	% define sets
+	\def\firstset{(3,3) ellipse (3 and 3)}
+	\def\secondset{(6.5,3) ellipse (3 and 3)}		
+	
+	% color sets
+	% \fill[mygreen] \firstset \secondset;
+	
+	% color intersection
+	\begin{scope}
+	\clip \firstset;
+	\fill[gray, opacity=0.2] \secondset;
+	\end{scope}
+	
+	% outline of sets
+	\draw \firstset \secondset;
+	
+	% set labels
+	\node[font=\Large\bfseries] at (1.5,5) {$P$};
+	\node[font=\Large\bfseries] at (8,5) {$Q$};
+	
+	% Nope points/arrows
+	\foreach \ax/\ay/\bx/\by in {
+		3/5.5/5/7,
+		0.5/2.2/-0.3/1.7
+	}{
+		\node at (\ax, \ay) {\textbullet};
+		\path[->, myred] (\ax, \ay) edge [bend left] (\bx, \by);
+	}
+	
+	% Correct points/arrows
+	\foreach \ax/\ay/\bx/\by in {
+		4.5/4.5/6/6.5,
+		1.5/3/2.5/3.3,
+		2.5/1/7.5/2.5
+	}{
+		\node at (\ax, \ay) {\textbullet};
+		\path[->, myblue] (\ax, \ay) edge [bend left] (\bx, \by);
+	}
+	
+	
+	\end{tikzpicture}
+	\caption{Nézzünk egy szemléletesebb példát a háromszög tulajdonságra. $P \vartriangleright_s Q$ akkor és csak akkor teljesül, ha $(P \land \neg Q)$-ból bárhogy választunk állapotokat, az $s$ utasítás hatására ugyanúgy $(P \land \neg Q)$-ban maradunk, vagy pedig $Q$-ba jutunk. Jó átmenetnek számítanak a kék nyilak, viszont a piros nyilakról ez nem mondható el.}
+	\label{fig:haromszog}
+\end{figure}
+
+
 A \textit{háromszögre} fontos néhány tulajdonságot megjegyezni, melyet a definíció alapján igazolhatunk.
 
 
