@@ -490,7 +490,7 @@ A $P$ állapotot az utasítás ekkor \textit{ha} elhagyja, akkor ezt csak $Q$-n 
 	
 	
 	\end{tikzpicture}
-	\caption{Nézzünk egy szemléletesebb példát a háromszög tulajdonságra. $P \vartriangleright_s Q$ akkor és csak akkor teljesül, ha $(P \land \neg Q)$-ból bárhogy választunk állapotokat, az $s$ utasítás hatására ugyanúgy $(P \land \neg Q)$-ban maradunk, vagy pedig $Q$-ba jutunk. Jó átmenetnek számítanak a kék nyilak, viszont a piros nyilakról ez nem mondható el.}
+	\caption{Nézzünk egy szemléletesebb példát a háromszög tulajdonságra. $P \vartriangleright_s Q$ akkor és csak akkor teljesül, ha $(P \land \neg Q)$-ból bárhogy választunk állapotokat, az $s$ utasítás hatására ugyanúgy $(P \land \neg Q)$-ban maradunk, vagy pedig $Q$-ba jutunk. Jó átmeneteknek számítanak a kék nyilak, viszont a piros nyilakról ez nem mondható el.}
 	\label{fig:haromszog}
 \end{figure}
 
@@ -517,7 +517,7 @@ P \vartriangleright_s Hamis = P \Rightarrow lf(s,P) = (2|x) \Rightarrow lf(x:=x+
 
 
 \paragraph{Feladat}
-\par Sszámoljuk ki \haromszog{P}{Q}-t, ha:\\
+\par Számoljuk ki \haromszog{P}{Q}-t, ha:\\
 $
 \begin{aligned}[r]
 S = (SKIP, \{s_1: x :&= x+2, \text{ ha } x<50, \text{ és}\\
@@ -548,23 +548,23 @@ $
 \paragraph{}Háromszög esetén szerencsére lehetőségünk van egyszerűsítések használatára, mellyel valamennyire megkönnyíthetjük a számolást.
 \begin{align*}
     P \land \neg Q &\Rightarrow lf(S,P \lor Q) \\
-    = P \land \neg Q &\Rightarrow \bigwedge_{s_i \in S} \big[\pi_i \rightarrow (P \lor Q)^{s_i} \land (\neg \pi_i \rightarrow (P \lor Q)^{SKIP})\big] \\
-    = P \land \neg Q &\Rightarrow \bigwedge_{s_i \in S} \big[\pi_i \rightarrow (P \lor Q)^{s_i} \land (\pi_i \lor (P \lor Q)^{SKIP})\big] \\
-    \text{felhasználva, hogy } A &\Rightarrow (B \land C) = A \Rightarrow B \land A \Rightarrow C\\
-    = P \land \neg Q &\Rightarrow \bigwedge_{s_i \in S}  \big(\big[\pi_i \rightarrow (P \lor Q)^{s_i}\big]\big) \land \\
-    (P \land \neg Q) &\Rightarrow \bigwedge_{s_i \in S} (\pi_i \lor (P \lor Q)^{SKIP}) \text{ (skip ág)} \\
-\end{align*} A skip ágat tovább tudjuk egyszerűsíteni.
-    Ebben az esetben meggondolható, hogy ha a bal oldal hamis, akkor az implikáció igaz lesz. Ha a bal oldal igaz, akkor $P$ értéke igaz és $\neg Q$ is teljesül, tehát $Q$ hamis. A következtetés jobb oldalán álló nagy konjunkciót triviálisan igazzá tudjuk tenni, hiszen ha $P$ igaz a bal oldalt, akkor  minden esetben szintén igaz lesz a jobb oldalon is, és \textit{igaz} feltétel mellé bármit ''vagyolhatunk'', az igazat ad, emellett igaz állítások \textit{és}elve is igazat adnak, tehát a "skip" ágra biztosan igaz a feltétel. A későbbiekben ezt a ''skip ág elhagyása''-ként említjük (ez nem azt jelenti, hogy az lf-ben a skippel sosem kell foglalkozni, csupán azt, hogy \textit{háromszög} számolása esetén a SKIP ág minden esetben igazat ad). Visszatérve az eredeti lf-hez ekkor:
-    
-    \begin{align*}
-        = P \land \neg Q &\Rightarrow \bigwedge_{s_i \in S}  \big(\big[\pi_i \rightarrow (P \lor Q)^{s_i}\big]\big) \land \uparrow\\
-        = P \land \neg Q &\Rightarrow \bigwedge_{s_i \in S}  \big(\big[\pi_i \rightarrow (P \lor Q)^{s_i}\big]\big)\\
-        = \forall s_i \in S: P \land \neg Q &\Rightarrow\big[\pi_i \rightarrow (P \lor Q)^{s_i}\big]
-    \end{align*}
-    A mostani formulát ''Ha igaz $A$, és akkor ha igaz $B$, teljesül -e $C$?'' módon tudjuk értelmezni, amit szóban (és logikában is) át tudunk fogalmazni ''Ha igaz $A$ és $B$, igaz -e $C$?'' módra. Ezt fogjuk a későbbiekben \textit{feltétel átvitelének} nevezni.
-    \begin{align*}
-        P \vartriangleright_S Q = \forall s_i \in S: (P \land \neg Q \land \pi_i) &\Rightarrow (P \lor Q)^{s_i}
-    \end{align*}
+    = P \land \neg Q &\Rightarrow \bigwedge_{s_i \in S} \big[\big(\pi_i \rightarrow (P \lor Q)^{s_i}\big) \land \big(\neg \pi_i \rightarrow (P \lor Q)^{SKIP}\big)\big] \\
+    = P \land \neg Q &\Rightarrow \bigwedge_{s_i \in S} \big[\big(\pi_i \rightarrow (P \lor Q)^{s_i}\big) \land \big(\pi_i \lor (P \lor Q)^{SKIP}\big)\big] \\
+    \text{felhasználva, hogy } A &\Rightarrow (B \land C) = (A \Rightarrow B) \land (A \Rightarrow C) \\
+    = \big(P \land \neg Q &\Rightarrow \bigwedge_{s_i \in S}  \big[\pi_i \rightarrow (P \lor Q)^{s_i}\big]\big)\ \land \\
+    \big(P \land \neg Q &\Rightarrow \bigwedge_{s_i \in S} \big[\pi_i \lor (P \lor Q)^{SKIP}\big]\big) \text{ (skip ág)}
+\end{align*}
+A skip ágat tovább tudjuk egyszerűsíteni.
+Ebben az esetben meggondolható, hogy ha a bal oldal hamis, akkor az implikáció igaz lesz. Ha a bal oldal igaz, akkor $P$ értéke igaz és $\neg Q$ is teljesül, tehát $Q$ hamis. A következtetés jobb oldalán álló nagy konjunkciót triviálisan igazzá tudjuk tenni, hiszen ha $P$ igaz a bal oldalt, akkor  minden esetben szintén igaz lesz a jobb oldalon is, és \textit{igaz} feltétel mellé bármit ''vagyolhatunk'', az igazat ad, emellett igaz állítások \textit{és}elve is igazat adnak, tehát a "skip" ágra biztosan igaz a feltétel. A későbbiekben ezt a ''skip ág elhagyása''-ként említjük (ez nem azt jelenti, hogy az lf-ben a skippel sosem kell foglalkozni, csupán azt, hogy \textit{háromszög} számolása esetén a SKIP ág minden esetben igazat ad). Visszatérve az eredeti lf-hez ekkor:
+\begin{align*}
+    = \big(P \land \neg Q &\Rightarrow \bigwedge_{s_i \in S} \big[\pi_i \rightarrow (P \lor Q)^{s_i}\big]\big) \land \uparrow \\
+    = P \land \neg Q &\Rightarrow \bigwedge_{s_i \in S} \big[\pi_i \rightarrow (P \lor Q)^{s_i}\big] \\
+    = \forall s_i \in S: (P \land \neg Q) &\Rightarrow (\pi_i \rightarrow (P \lor Q)^{s_i})
+\end{align*}
+A mostani formulát ''Ha igaz $A$, és akkor ha igaz $B$, teljesül -e $C$?'' módon tudjuk értelmezni, amit szóban (és logikában is) át tudunk fogalmazni ''Ha igaz $A$ és $B$, igaz -e $C$?'' módra. Ezt fogjuk a későbbiekben \textit{feltétel átvitelének} nevezni.
+\begin{align*}
+    P \vartriangleright_S Q = \forall s_i \in S: (P \land \neg Q \land \pi_i) &\Rightarrow (P \lor Q)^{s_i}
+\end{align*}
 Ismét kiemelnénk, hogy a \textit{''skip+feltétel''} módszerrel való számolás csak és kizárólag a \textit{háromszög} számolása esetén használható.
 
 Teljesül -e a stabilitási tulajdonság az itt megadott állításokra és programra nézve?\\
@@ -573,7 +573,7 @@ Teljesül -e a stabilitási tulajdonság az itt megadott állításokra és prog
 $
 \begin{aligned}[t]
 S = (SKIP, \{s_1: x :&= x+2, \text{ ha } x<50, \text{ és}\\
-s_2: x :&= x+1, \text{ ha } x\ge 50 \}\\
+	s_2: x :&= x+1, \text{ ha } x\ge 50 \})\\
 &P = (2|x)\\
 &Q = (x\ge50)\\
  \\
@@ -589,6 +589,31 @@ $
 
 Látszik, hogy így mennyivel egyszerűbben megkapjuk ugyan azt az eredményt, amit korábban egy oldalon keresztül kellett számolni.
 
+A biztonság kedvéért nézzünk meg még egy példát. \\
+Legyen $\begin{aligned}[t]
+	S = (SKIP, \{
+		s_1: x :&= x+1, \\
+		s_2: x :&= x-1, \text{ ha } 2|x \}), \\
+\end{aligned}$ \\
+valamint $P = (x=3)$ és $Q = (x=4)$. Számoljuk ki $P \vartriangleright_S Q$-t! Ekkor
+\begin{align*}
+	P \vartriangleright_S Q &= (P \vartriangleright_{s_1} Q) \land (P \vartriangleright_{s_2} Q) \\
+	P \vartriangleright_{s_1} Q &= (P \land \neg Q) \Rightarrow lf(s_1, P \lor Q) \\
+		&= (x = 3 \land x \neq 4) \Rightarrow (x=3 \lor x=4)^{x \leftarrow x+1} \\
+		&= (x = 3 \land x \neq 4) \Rightarrow (x+1=3 \lor x+1=4) \\
+		&= (x = 3) \Rightarrow (x=2 \lor x=3) \\
+		&\text{Mivel } \{3\} \subseteq \{2, 3\}: \\
+		&=\ \uparrow \\
+	P \vartriangleright_{s_2} Q &= (P \land \neg Q) \Rightarrow lf(s_2, P \lor Q) \\
+		&\text{SKIP + feltétel miatt:} \\
+		&= (P \land \neg Q \land \pi_2) \Rightarrow (P \lor Q)^{s_2} \\
+		&= (x=3 \land x \neq 4 \land 2|x) \Rightarrow (x=3 \lor x=4)^{x \leftarrow x-1} \\
+		&= (x=3 \land x \neq 4 \land 2|x) \Rightarrow (x-1=3 \lor x-1=4) \\
+		&= (x=3 \land 2|x) \Rightarrow (x=4 \lor x=5) \\
+		&=\ \downarrow\ \Rightarrow (x=4 \lor x=5) \\
+		&=\ \uparrow \\
+	P \vartriangleright_S Q &= (P \vartriangleright_{s_1} Q) \land (P \vartriangleright_{s_2} Q) =\ \uparrow\ \land\ \uparrow\ =\ \uparrow
+\end{align*}
 
 \newpage
 \section{Megoldások}
