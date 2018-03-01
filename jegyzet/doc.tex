@@ -30,6 +30,9 @@ bottom = 25mm]{geometry}
 \newcommand{\lfsih}[1] {$\lceil lf(S,#1) \rceil$}
 \newcommand{\sut}{$s \subseteq A \times A^{**}$ }
 \newcommand{\sprog}{$S = (s_0, \{s_1, s_2, \dots, s_n\})$ }
+\newcommand{\haromszog}[2]{$#1 \vartriangleright_S #2$}
+\newcommand{\egyenesnyil}[2]{$#1 \mapsto_S #2$}
+\newcommand{\gorbenyil}[2]{$#1 \hookrightarrow_S #2$}
 
 
 \setstretch{1.2}
@@ -458,10 +461,86 @@ $P \vartriangleright_s Hamis = P \land Igaz \Rightarrow lf(s,P \lor Hamis) = P \
 Egy példa erre, mikor nem teljesül:\\
 $s = (x := x+1) \text{ és } P = (2|x) \\
 P \vartriangleright_s Hamis = P \Rightarrow lf(s,P) = (2|x) \Rightarrow lf(x:=x+1, 2|x) = (2|x) \Rightarrow (2|x)^{x \leftarrow x+1} = (2|x) \Rightarrow (2|x+1) $, ami nyilvánvaló ellentmondás, hiszen ha egy szám páros, akkor a nála eggyel nagyobb szám nem lehet szintén páros (mivel az páratlan).
-\paragraph{}Abban az esetben azonban, \textit{ha} $P \vartriangleright_s Hamis$ teljesül, akkor azt mondjuk, hogy: $P stabil_s$, avagy $s$ rendelkezik a $P$ stabil tulajdonsággal, azaz $P$-ből nem tud kivezetni a program. (Triviálisan stabil tulajdonság az $Igaz$, hiszen $Igaz \Rightarrow lf(s,Igaz)$ tetszőleges utasításra teljesül.)
+\paragraph{}Abban az esetben azonban, \textit{ha} $P \vartriangleright_s Hamis$ teljesül, akkor azt mondjuk, hogy $s$ rendelkezik a $P$ stabil tulajdonsággal, azaz $P$-ből nem tud kivezetni a program. Jelölésünk erre: $P stabil_s$ (triviálisan stabil tulajdonság az $Igaz$, hiszen $Igaz \Rightarrow lf(s,Igaz)$ tetszőleges utasításra teljesül).
+
+\paragraph{}A háromszög azonban nem tranzitív, azaz $ P \vartriangleright_s Q \text{ és } Q \vartriangleright_s R$-re általában \textbf{nem igaz}, hogy $P \vartriangleright_s R$.
+
+
+\paragraph{Feladat}
+\par Sszámoljuk ki \haromszog{P}{Q}-t, ha:\\
+$
+\begin{aligned}[r]
+S = (SKIP, \{s_1: x :&= x+2, \text{ ha } x<50, \text{ és}\\
+s_2: x :&= x+1, \text{ ha } x\ge 50 \}\\
+&P = (2|x)\\
+&Q = (x\ge50)\\
+ \\
+P \vartriangleright_S Q &= lf(S, P \lor Q)\\
+(2|x)\land (x<50) &\Rightarrow lf(S, (2|x \lor x\ge50)) \\
+\text{Az } lf &\text{ multiplikativitását felhasználva:}\\
+lf(S,P \lor Q) &= lf(s_1, P\lor Q) \land lf(s_2, P\lor Q)\\
+s1: lf(x:=x+2, \text { ha } x<50 &, (2|x \lor x\ge50) ) = \\
+(x<50 &\rightarrow (2|x \lor x\ge50)^{x \leftarrow x+2}) \land \\
+\land (x\ge50 &\rightarrow (2|x \lor x\ge50))\\
+=(x\ge50 \lor 2|x+2 \lor x+2\ge50) = (x\ge50 \lor 2|x &\lor x\ge48)= (x\ge48 \lor 2|x)\\
+s2: lf(x:=x+1, \text { ha } x\ge50 &, (2|x \lor x\ge50) ) = \\
+(x\ge50 &\rightarrow (2|x \lor x\ge50)^{x \leftarrow x+1}) \land \\
+\land (x<50 &\rightarrow (2|x \lor x\ge50))\\
+=(x\ge50 \rightarrow 2|(x+1) \lor x+1\ge50) &\land (x<50 \rightarrow 2|x \lor x\ge50)\\
+=(x<50 \lor 2|x+1 \lor x\ge49) &\land (x\ge50 \lor 2|x \lor x\ge50)\\
+=(\uparrow) &\land (2|x \lor x\ge50)\\
+\text{A két eredményt éselve: } lf(S,P\lor Q) &= lf(s_1,P\lor Q) \land (s_2, P \lor Q)\\
+=(x\ge48 \lor 2|x) \land (x\ge48 \lor 2|x) &= 2|x \lor x\ge50\\
+P\land \neg Q &\Rightarrow lf(S,P\lor Q) =\\
+(2|x \land x<50) &\Rightarrow (2|x \lor x\ge50) \text{ pedig igaz.}
+\end{aligned}
+$
+\paragraph{}Háromszög esetén szerencsére lehetőségünk van egyszerűsítések használatára, mellyel valamennyire megkönnyíthetjük a számolást.
+\begin{align*}
+    P \land \neg Q &\Rightarrow lf(S,P \lor Q) \\
+    = P \land \neg Q &\Rightarrow \bigwedge_{s_i \in S} \big[\pi_i \rightarrow (P \lor Q)^{s_i} \land (\neg \pi_i \rightarrow (P \lor Q)^{SKIP})\big] \\
+    = P \land \neg Q &\Rightarrow \bigwedge_{s_i \in S} \big[\pi_i \rightarrow (P \lor Q)^{s_i} \land (\pi_i \lor (P \lor Q)^{SKIP})\big] \\
+    \text{felhasználva, hogy } A &\Rightarrow (B \land C) = A \Rightarrow B \land A \Rightarrow C\\
+    = P \land \neg Q &\Rightarrow \bigwedge_{s_i \in S}  \big(\big[\pi_i \rightarrow (P \lor Q)^{s_i}\big]\big) \land \\
+    (P \land \neg Q) &\Rightarrow \bigwedge_{s_i \in S} (\pi_i \lor (P \lor Q)^{SKIP}) \text{ (skip ág)} \\
+\end{align*} A skip ágat tovább tudjuk egyszerűsíteni.
+    Ebben az esetben meggondolható, hogy ha a bal oldal hamis, akkor az implikáció igaz lesz. Ha a bal oldal igaz, akkor $P$ értéke igaz és $\neg Q$ is teljesül, tehát $Q$ hamis. A következtetés jobb oldalán álló nagy konjunkciót triviálisan igazzá tudjuk tenni, hiszen ha $P$ igaz a bal oldalt, akkor  minden esetben szintén igaz lesz a jobb oldalon is, és \textit{igaz} feltétel mellé bármit ''vagyolhatunk'', az igazat ad, emellett igaz állítások \textit{és}elve is igazat adnak, tehát a "skip" ágra biztosan igaz a feltétel. A későbbiekben ezt a ''skip ág elhagyása''-ként említjük (ez nem azt jelenti, hogy az lf-ben a skippel sosem kell foglalkozni, csupán azt, hogy \textit{háromszög} számolása esetén a SKIP ág minden esetben igazat ad). Visszatérve az eredeti lf-hez ekkor:
+    
+    \begin{align*}
+        = P \land \neg Q &\Rightarrow \bigwedge_{s_i \in S}  \big(\big[\pi_i \rightarrow (P \lor Q)^{s_i}\big]\big) \land \uparrow\\
+        = P \land \neg Q &\Rightarrow \bigwedge_{s_i \in S}  \big(\big[\pi_i \rightarrow (P \lor Q)^{s_i}\big]\big)\\
+        = \forall s_i \in S: P \land \neg Q &\Rightarrow\big[\pi_i \rightarrow (P \lor Q)^{s_i}\big]
+    \end{align*}
+    A mostani formulát ''Ha igaz $A$, és akkor ha igaz $B$, teljesül -e $C$?'' módon tudjuk értelmezni, amit szóban (és logikában is) át tudunk fogalmazni ''Ha igaz $A$ és $B$, igaz -e $C$?'' módra. Ezt fogjuk a későbbiekben \textit{feltétel átvitelének} nevezni.
+    \begin{align*}
+        P \vartriangleright_S Q = \forall s_i \in S: (P \land \neg Q \land \pi_i) &\Rightarrow (P \lor Q)^{s_i}
+    \end{align*}
+Ismét kiemelnénk, hogy a \textit{''skip+feltétel''} módszerrel való számolás csak és kizárólag a \textit{háromszög} számolása esetén használható.
+
+Teljesül -e a stabilitási tulajdonság az itt megadott állításokra és programra nézve?\\
+(Azaz számoljuk ki \haromszog{P}{Q}-t, ha:)\\
+\par
+$
+\begin{aligned}[t]
+S = (SKIP, \{s_1: x :&= x+2, \text{ ha } x<50, \text{ és}\\
+s_2: x :&= x+1, \text{ ha } x\ge 50 \}\\
+&P = (2|x)\\
+&Q = (x\ge50)\\
+ \\
+\text{SKIP} &+ \text{feltétel miatt: }\\
+P \vartriangleright_S Q &=\forall s_i \in S: (P \land \neg Q \land \pi_i) \Rightarrow (P \lor Q)^{s_i}\\
+s1: (2|x) &\land (x<50) \land (x<50) \Rightarrow (2|x \lor x\ge50)^{x \leftarrow x+2} = \\
+(2|x &\land x<50) \Rightarrow (2|x \lor x\ge 48) = \uparrow \\
+s2: (2|x) &\land (x<50) \land (x\ge50) \Rightarrow (2|x \lor x\ge50) = \\
+\downarrow &\Rightarrow (2|x \lor x\ge50) = \uparrow\\
+P \vartriangleright_S Q &= \uparrow \land \uparrow = \uparrow
+\end{aligned}
+$
+
+Látszik, hogy így mennyivel egyszerűbben megkapjuk ugyan azt az eredményt, amit korábban egy oldalon keresztül kellett számolni.
+
 
 \newpage
-
 \section{Megoldások}
 	~\ref{etkezo-filo} - \nameref{etkezo-filo}
 	\begin{itemize}
