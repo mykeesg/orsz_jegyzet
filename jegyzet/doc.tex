@@ -529,11 +529,11 @@ P \vartriangleright_S Q &= lf(S, P \lor Q)\\
 (2|x)\land (x<50) &\Rightarrow lf(S, (2|x \lor x\ge50)) \\
 \text{Az } lf &\text{ multiplikativitását felhasználva:}\\
 lf(S,P \lor Q) &= lf(s_1, P\lor Q) \land lf(s_2, P\lor Q)\\
-s1: lf(x:=x+2, \text { ha } x<50 &, (2|x \lor x\ge50) ) = \\
+s_1: lf(x:=x+2, \text { ha } x<50 &, (2|x \lor x\ge50) ) = \\
 (x<50 &\rightarrow (2|x \lor x\ge50)^{x \leftarrow x+2}) \land \\
 \land (x\ge50 &\rightarrow (2|x \lor x\ge50))\\
 =(x\ge50 \lor 2|x+2 \lor x+2\ge50) = (x\ge50 \lor 2|x &\lor x\ge48)= (x\ge48 \lor 2|x)\\
-s2: lf(x:=x+1, \text { ha } x\ge50 &, (2|x \lor x\ge50) ) = \\
+s_2: lf(x:=x+1, \text { ha } x\ge50 &, (2|x \lor x\ge50) ) = \\
 (x\ge50 &\rightarrow (2|x \lor x\ge50)^{x \leftarrow x+1}) \land \\
 \land (x<50 &\rightarrow (2|x \lor x\ge50))\\
 =(x\ge50 \rightarrow 2|(x+1) \lor x+1\ge50) &\land (x<50 \rightarrow 2|x \lor x\ge50)\\
@@ -580,9 +580,9 @@ S = (SKIP, \{s_1: x :&= x+2, \text{ ha } x<50, \text{ és}\\
  \\
 \text{SKIP} &+ \text{feltétel miatt: }\\
 P \vartriangleright_S Q &=\forall s_i \in S: (P \land \neg Q \land \pi_i) \Rightarrow (P \lor Q)^{s_i}\\
-s1: (2|x) &\land (x<50) \land (x<50) \Rightarrow (2|x \lor x\ge50)^{x \leftarrow x+2} = \\
+s_1: (2|x) &\land (x<50) \land (x<50) \Rightarrow (2|x \lor x\ge50)^{x \leftarrow x+2} = \\
 (2|x &\land x<50) \Rightarrow (2|x \lor x\ge 48) = \uparrow \\
-s2: (2|x) &\land (x<50) \land (x\ge50) \Rightarrow (2|x \lor x\ge50) = \\
+s_2: (2|x) &\land (x<50) \land (x\ge50) \Rightarrow (2|x \lor x\ge50) = \\
 \downarrow &\Rightarrow (2|x \lor x\ge50) = \uparrow\\
 P \vartriangleright_S Q &= \uparrow \land \uparrow = \uparrow
 \end{aligned}
@@ -616,6 +616,52 @@ valamint $P = (x=3)$ és $Q = (x=4)$. Számoljuk ki $P \vartriangleright_S Q$-t!
 	P \vartriangleright_S Q &= (P \vartriangleright_{s_1} Q) \land (P \vartriangleright_{s_2} Q) =\ \uparrow\ \land\ \uparrow\ =\ \uparrow
 \end{align*}
 
+\section{konzultáció}
+\subsection{Haladási tulajdonság}
+\paragraph{}
+A korábbiakban egy biztonsági tulajdonságot néztünk a \textit{háromszög} definíciójában. Ez azonban nem követelte meg, hogy haladjon is a programunk, így érezhető, hogy ez még kevés lesz ahhoz, hogy egy programot jól működését jellemezhessük. Pont ezért bevezetjük az \textit{egyenes nyíl} definícióját:
+
+$$P \mapsto_S Q ::= P \vartriangleright_S Q \land \exists s_i \in S: P \land \neg Q \Rightarrow lf(s_i, Q) $$
+
+Az \textit{egyenes nyíl} tehát egy biztonsági és haladási tulajdonságot garantál egyszerre nekünk: a $P$ állapotot csak $Q$-n keresztül hagyhatjuk el, viszont kell léteznie (legalább egy, de lehet több) olyan utasításnak az absztrakt programban, mely egy lépésben átvisz minket tetszőleges $P$-beli állapotból $Q$-ba.
+\paragraph{}
+Az egyenes nyíl teljesülését a korábbiakhoz hasonlóan definíció alapján fogjuk ellenőrözni. Először meg kell vizsgálnunk, hogy a \textit{háromszög} tulajdonság teljesül -e rá. Amennyiben igen, akkor további ellenőrzést kíván annak a programnak a megtalálása, mely biztosítja a haladást. (Ha már a háromszög vizsgálatánál elbukik egy feltétel, akkor biztos, hogy az egyenes nyíl sem fog rá teljesülni.)
+
+Példa:
+$
+\begin{aligned}[t]
+S = (x:=0, \{s_1: x :&= x/2, \text{ ha } 2|x, \text{ és}\\
+s_2: x :&= x+1\})\\
+&P = (2|x)\\
+&Q = (2\nmid x)\\
+\text{SKIP} &+ \text{feltétel alapján: }\\
+P \vartriangleright_S Q &=\forall s_i \in S: (P \land \neg Q \land \pi_i) \Rightarrow (P \lor Q)^{s_i}\\
+s_1: (2|x) &\land (2|x) \land (2|x) \Rightarrow (2|x \lor 2\nmid x)^{x \leftarrow x/2} = \\
+(2|x &) \Rightarrow (2|x/2 \lor 2\nmid x/2) = \uparrow \\
+s_2: (2|x) &\land (2|x) \land (\uparrow) \Rightarrow (2|x \lor 2\nmid x)^{x \leftarrow x+1} = \\
+(2|x) &\Rightarrow (2|x+1 \lor 2\nmid x+1) = \uparrow\\
+P \vartriangleright_S Q &= \uparrow \land \uparrow = \uparrow\\
+\text{A háromszög tehát igaz. Meg } & \text{kell azonban vizsgálni, hogy létezik -e s}_i,\\
+\text{amelyre a plusz feltétel teljesül: }& P\land \neg Q \Rightarrow lf(s_i, Q)\\
+s1: (2|x) \land (2|x) &\Rightarrow lf(x:=x/2, \text{ ha } 2|x, 2\nmid x)\\
+(2|x) &\Rightarrow (2|x \rightarrow (2\nmid x)^{x\leftarrow x/2}) \land (2\nmid x \rightarrow (2\nmid x))\\
+(2|x) &\Rightarrow ((2\nmid x \lor (2\nmid x/2)) \land \uparrow)\\
+(2|x) &\Rightarrow (2 \nmid x/2).\\
+\end{aligned}
+$
+
+Erről azonban nem tudunk semmit sem mondani, hisz $x=42$ esetén az állítás igaz, de $x=44$ esetben nem teljesül. $s_1$ tehát nem jó választás az egyenes nyílban keresett haladást biztosító programnak.\\
+Vizsgáljuk $s_2$-t:\\
+$
+\begin{aligned}[t]
+s_2: (2|x) \land (2|x) &\Rightarrow lf(x:=x+1, 2\nmid x)\\
+(2|x) &\Rightarrow (2\nmid x)^{x\leftarrow x+1} \land (\downarrow \rightarrow (2\nmid x))\\
+(2|x) &\Rightarrow (2\nmid x+1) \land \uparrow)\\
+(2|x) &\Rightarrow (2 \nmid x+1).\\
+\end{aligned}
+$
+\\
+Ha $x$ páros, akkor nyilvánvalóan $x+1$ páratlan, így ez az következtetés helyes. Összegezve az eddigieket, az alábbi programra igaz, hogy \egyenesnyil{P}{Q}, ahol a definícióban szerelpő $s_i$-nek $s_2$-t választjuk.
 \newpage
 \section{Megoldások}
 	~\ref{etkezo-filo} - \nameref{etkezo-filo}
