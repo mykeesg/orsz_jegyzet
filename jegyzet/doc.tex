@@ -79,6 +79,18 @@ bottom = 25mm]{geometry}
 	\tableofcontents
 	\newpage
 	
+	\paragraph{Tisztelt Hallgatók!} Ez a dokumentum azért készült, hogy az ELTE-IK hallgatóinak megkönnyítse a tanulást és a ZH-ra való felkészülést. Az alapból kollokvium számonkérésű tárgyhoz tartozik egy konzultációs óra, melynek mi vagyunk a demonstrátorai.
+	
+	\paragraph{}Ez az óra arra hivatott, hogy az előadáson elhangzott ismereteket megerősítse, az esetleges kérdésekre választ adjon. A tárgyra két zárthelyi (előre meghatározott szint fölötti) teljesítésével megajánlott jegyet lehet szerezni, ám ehhez nem elegendőek véleményünk szerint az előadások, a konzultáción sokkal mélyebben, a gyakorlati példák pontos ismertetésével és a szükséges definíciók és tételek körbejárásával foglalkozunk.
+	\paragraph{}Az itt leírtak bár gondos odafigyelés mellett készültek, ám előfordulhat, hogy egy-egy helyen helyesírási vagy egyéb hiba található. Amennyiben úgy érzitek, hogy valamilyen elírásra bukkantatok, feltétlenül szóljatok nekünk, hogy minél hamarabb javíthassuk azokat.
+	\paragraph{}Ugyan ezen okból ez a PDF nem minősül hivatalos jegyzetnek, hiszen nem került (még) lektorálásra és olykor a megfogalmazás is pontatlan lehet (matematikailag). Ennek oka, hogy nem egy tétel/definíció-gyűjteményt kívántunk összeírni, hanem egy olyan jegyzetet, ami elsősorban azok megértését segíti.
+	\paragraph{}A vizsgára való felkészülést csupán segíti és megkönnyíti, nem helyettesíti a konzultáció. Kérünk mindenkit, hogy ne vegye fél vállról a készülést, mivel itt rengeteg, sokotok számára új definíció, tétel és bizonyítási módszer kerül tárgyalásra, melyet a vizsga előtti napokban olvasva nagyon nehezen fogad be a hallgató, ha előtte még nem találkozott ezekkel.
+	\paragraph{}
+	A példákban ismertetett feladatok során, ha csak explicit nem jelezzük, az állapottéren általában a változóink az egész számok ($\mathbb{Z}$) típusába tartoznak. A logikai értékeket ($\mathbb{L}$), tehát az $\{igaz, hamis\}$ halmaz elemeit több helyen a $\uparrow, \downarrow$ jelekkel helyettesítjük, ahol a felfelé mutató nyíl felel meg az \textit{igaz}, a lefelé irányuló pedig a \textit{hamis} értéknek.\\\\\\\\\\\\
+	Mindenkinek eredményes félévet és sikeres készülést kívánunk!
+	\\Laci, Miki
+	
+	\newpage
 	\section{konzultáció}
 	\subsection{Áttekintés}
 	\paragraph{}
@@ -720,25 +732,29 @@ bottom = 25mm]{geometry}
 	
 \subsection{Specifikáció}	
 	Az étkező filozófusok példájánál már fogalmaztunk meg specifikációs feltételeket, mellyel a \textit{feladat}ot próbáltuk matematikai relációkkal megfogalmazni.
-	\paragraph{}Ahhoz azonban, hogy program és feladat megoldási kapcsolatát tudjuk vizsgálni, szükségünk lesz a kettő közötti megfeleltetésre az ellenőrzéshez.\\
+	\paragraph{}Ahhoz azonban, hogy program és feladat megoldási kapcsolatát tudjuk vizsgálni, szükségünk lesz a kettő közötti megfeleltetésre az ellenőrzéshez.
 	\begin{align*}
-	&\text{Feltehető, hogy: } \exists K \in inv_S ( \bigwedge_{Q \in INIT_h} Q)\\
+	&\text{Feltehető, hogy: } \exists K \in inv_S ( \bigwedge_{Q \in INIT_h} Q) &(\text{az } Igaz \text{ minden esetben invariáns})\\
 	&\text{Specifikáció} &\text{Ellenőrzés} \\
 	&Q \in INIT_h &\rule{1cm}{0.3pt}\\
 	&P \in inv_h &P \land K \in inv_S(Q)\\
-	&P \vartriangleright_h Q & P \land K \vartriangleright_S R \land K\\
+	&P \vartriangleright_h R & P \land K \vartriangleright_S R \land K\\
 	&P \mapsto_h R &P\land K \mapsto_S R \land K\\
 	&P \hookrightarrow_h R &P \land K \hookrightarrow_S R \land K\\
-    &R \in FP_H (FP_h \Rightarrow R) & \mathlarger{\mathlarger{\varphi}}_S \land K \Rightarrow R\\
-    &Q \in TERM_h (Q \hookrightarrow_h FP_h) & sp(s_0, Q) \land K \hookrightarrow_S \mathlarger{\mathlarger{\varphi}}_S
+    &R \in FP_h \text{(azaz: }FP_h \Rightarrow R) & \mathlarger{\mathlarger{\varphi}}_S \land K \Rightarrow R\\
+    &Q \in TERM_h  \text{(azaz: }Q \hookrightarrow_h FP_h) & sp(s_0, Q) \land K \hookrightarrow_S \mathlarger{\mathlarger{\varphi}}_S
 	\end{align*}
 	
-	\paragraph{}Jól látszik, hogy a kezdeti feltételt nem ellenőrizzük. Az $INIT_H$ feltételek ugyanis azt írják le, hogy milyen állapotból indul a programunk.\\
+	\paragraph{}
+	Jól látszik, hogy a kezdeti feltételt nem ellenőrizzük. Az $INIT_h$ feltételek ugyanis azt írják le, hogy milyen állapotból indul a programunk.\\
 	
 	Az invariáns állítással való metszés bár elsőre úgy tűnik, hogy nehezíti a dolgunkat, ám egy invariáns \textit{megkönnyíti} valójában nekünk a megfelelés vizsgálatát. Mivel egy program összes elérhető állapotát tartalmaznia kell az invariánsnak (definíció miatt) és ezt az állapotot nem hagyhatja el a program, így a $(P\land K)$ állapotoknak (általában) sokkal kevesebb eleme van, mintha önmagában $P$-t vizsgálnánk, azaz sokkal kevesebb helyen kell belátni, hogy eleget tesznek-e a definíciónak.
 	
-	
-	
+	Érdemes lehet még megemlíteni a \textit{fixpont-finomítás}i tételt:
+	\paragraph{}
+	Ha $S$ megfelel a $P \in inv_h$ valamint a $ Q \in FP_h$ specifikációs feltételeknek, és $P \land Q \Rightarrow R$, akkor megfelel az $FP_h \Rightarrow R$ feltételnek is.
+	\paragraph{}
+	Mit is mond ez? Ha van egy invariáns tulajdonságunk, ami végig fent áll a program futása során, és van olyan fixpontja a programunknak, mely teljesíti a\textit{fixpont}-feltételt, és a két halmaz metszete együtt része $R$-nek, akkor $R$ is fixpont. (Sokszor ezt a tételt fordítva alkalmazzuk: Egy ''nehezebben'' számolható fixpontot felbontunk egy invariáns és egy másik fixpont-feltételre, melyek együtt már kiadják az eredeti fixpontot.)
 	
 	
 	
