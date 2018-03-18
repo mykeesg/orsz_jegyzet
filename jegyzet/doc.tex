@@ -27,12 +27,13 @@ bottom = 25mm]{geometry}
 \definecolor{mygreen}{RGB}{60, 179, 113}
 \definecolor{myred}{RGB}{220, 20, 60}
 
-\newcommand{\lfsih}[1] {$\lceil lf(S,#1) \rceil$}
-\newcommand{\sut}{$s \subseteq A \times A^{**}$ }
-\newcommand{\sprog}{$S = (s_0, \{s_1, s_2, \dots, s_n\})$ }
-\newcommand{\haromszog}[2]{$#1 \vartriangleright_S #2$}
-\newcommand{\egyenesnyil}[2]{$#1 \mapsto_S #2$}
-\newcommand{\gorbenyil}[2]{$#1 \hookrightarrow_S #2$}
+\newcommand{\lfsih}[1] {\ensuremath{\lceil lf(S,#1) \rceil}}
+\newcommand{\sut}{\ensuremath{s \subseteq A \times A^{**}} }
+\newcommand{\sprog}{\ensuremath{S = (s_0, \{s_1, s_2, \dots, s_n\})} }
+\newcommand{\haromszog}[2]{\ensuremath{#1 \vartriangleright_S #2}}
+\newcommand{\egyenesnyil}[2]{\ensuremath{#1 \mapsto_S #2}}
+\newcommand{\gorbenyil}[2]{\ensuremath{#1 \hookrightarrow_S #2}}
+\newcommand{\doboz}[2]{ \ensuremath{\mathop{\square}\limits_{#1=1}^{#2} }  }
 
 
 \setstretch{1.2}
@@ -302,7 +303,7 @@ bottom = 25mm]{geometry}
 	$$\lceil lf(s,R)\rceil = \lceil R \circ p(s) \rceil.$$
 	Az \textit{lf}-et tehát az utófeltételbe helyettesítés módszerével tudjuk kifejezni (ennek bizonyítása megtalálható a \textit{tankönyv}\textsuperscript{\cite{fothi_biblia}} 44-ik oldalán, a 3.1-es definíciónál). 
 	
-	\par Mivel a leggyengébb előfeltételt nem csak utasításokra, hanem programokra is ki szeretnénk tudni számolni, a fenti definíciót picit általánosítani kell. Tehát legyen \sprog program, $R: A \rightarrow \mathbb{L}$ állítás. Ekkor az $S$ program $R$ utófeltélhez tartozó \textit{leggyengébb előfeltétele} az egyes utasításai által adott leggyengébb előfeltételek konjugáltja lesz:
+	\par Mivel a leggyengébb előfeltételt nem csak utasításokra, hanem programokra is ki szeretnénk tudni számolni, a fenti definíciót picit általánosítani kell. Tehát legyen \sprog program, $R: A \rightarrow \mathbb{L}$ állítás. Ekkor az $S$ program $R$ utófeltételhez tartozó \textit{leggyengébb előfeltétele} az egyes utasításai által adott leggyengébb előfeltételek konjugáltja lesz:
 	$$ lf(S, R) = \bigwedge_{i=1}^n lf(s_i, R). $$
 	
 	
@@ -681,9 +682,9 @@ bottom = 25mm]{geometry}
 	$
 	\begin{aligned}[t]
 	&P \hookrightarrow_S Q \equiv (P\mapsto_S Q)^{TDL}, \text{ azaz:}\\
-	1) \text{Ha } &P \mapsto_S Q, \text{ akkor } P \hookrightarrow_S Q.\\
-	2) \text{Ha } &P\hookrightarrow_S Q, Q\hookrightarrow_S R, \text{ akkor } P \hookrightarrow_S R\\
-	3) \text{Ha } &P_1\hookrightarrow_S Q, P_2\hookrightarrow_S Q, \text{ akkor } (P_1 \lor P_2) \hookrightarrow_S Q\\
+	1) \text{Ha } &\egyenesnyil{P}{Q}, \text{ akkor } \gorbenyil{P}{Q}.\\
+	2) \text{Ha } &\gorbenyil{P}{Q}, \gorbenyil{Q}{R}, \text{ akkor } \gorbenyil{P}{R}\\
+	3) \text{Ha } &\gorbenyil{P_1}{Q}, \gorbenyil{P_2}{Q}, \text{ akkor } \gorbenyil{P_1 \lor P_2}{Q}\\
 	\end{aligned}
 	$
 	\paragraph{}
@@ -738,9 +739,9 @@ bottom = 25mm]{geometry}
 	&\text{Specifikáció} &\text{Ellenőrzés} \\
 	&Q \in INIT_h &\rule{1cm}{0.3pt}\\
 	&P \in inv_h &P \land K \in inv_S(Q)\\
-	&P \vartriangleright_h R & P \land K \vartriangleright_S R \land K\\
-	&P \mapsto_h R &P\land K \mapsto_S R \land K\\
-	&P \hookrightarrow_h R &P \land K \hookrightarrow_S R \land K\\
+	&P \vartriangleright_h R & \haromszog{P\land K}{R\land K}\\
+	&P \mapsto_h R &\egyenesnyil{P\land K}{R \land K}\\
+	&P \hookrightarrow_h R &\gorbenyil{P\land K}{R \land K}\\
     &R \in FP_h \text{(azaz: }FP_h \Rightarrow R) & \mathlarger{\mathlarger{\varphi}}_S \land K \Rightarrow R\\
     &Q \in TERM_h  \text{(azaz: }Q \hookrightarrow_h FP_h) & sp(s_0, Q) \land K \hookrightarrow_S \mathlarger{\mathlarger{\varphi}}_S
 	\end{align*}
@@ -755,6 +756,33 @@ bottom = 25mm]{geometry}
 	Ha $S$ megfelel a $P \in inv_h$ valamint a $ Q \in FP_h$ specifikációs feltételeknek, és $P \land Q \Rightarrow R$, akkor megfelel az $FP_h \Rightarrow R$ feltételnek is.
 	\paragraph{}
 	Mit is mond ez? Ha van egy invariáns tulajdonságunk, ami végig fent áll a program futása során, és van olyan fixpontja a programunknak, mely teljesíti a\textit{fixpont}-feltételt, és a két halmaz metszete együtt része $R$-nek, akkor $R$ is fixpont. (Sokszor ezt a tételt fordítva alkalmazzuk: Egy ''nehezebben'' számolható fixpontot felbontunk egy invariáns és egy másik fixpont-feltételre, melyek együtt már kiadják az eredeti fixpontot.)
+	
+	
+	
+	
+	\section{konzultáció}
+	\paragraph{}Szükségünk lesz még néhány nem alkalmazott, de a későbbiekben fontos jelölés megismerésére. Az állapotterünk eddig szinte minden esetben egyetlen $x$ változót tartalmazott, azonban ezek nagyon speciális eseteket fednek le, egy absztrakt program bőven több, mint egy változót szokott használni.
+	\paragraph{}
+	$V = vektor([1..n], \mathbb{N})$ jelölje azokat a vektorokat, melyet a programozási ismereteink alapján tömbökként képzelhetünk el. Ezeket a már megszokott módon \textit{indexelhetjük}, melyet 1-től kezdünk, valamint az utolsó megengedett index $n$. A vektornál fel van tüntetve a típusérték-halmaz, azaz hogy milyen elemeket tartalmaz, illetve a mérete is. Egy valós számokat tartalmazó, 6 hosszú vektort ez alapján $V = vektor([1..6], \mathbb{R})$ módon jelölnénk. Lehetőségünk van tetszőleges típusparaméterezésű vektort definiálni, ám ha nem egyértelmű, milyen típus-műveletek értelmezettek ezeken, akkor azokat mindenképp fel kell tüntetni.
+	
+	\paragraph{}
+	Az absztrakt program megadásakor előfordul, hogy pontosan ugyan annyi utasításunk van, mint ahány dimenziójú az állapottérben található vektor, és az összes ilyen utasítás pont a sorszámának megfelelő komponensét módosítaná az vektornak. Ahhoz, hogy ne kelljen mind az $n$ utasítást felsorolni, egy egyedi jelölést fogunk a ''vessző'' helyett alkalmazni:\\
+	Az $ S = (s_0, \{ \doboz{i}{n} s_i = v[i] := 0  \}) $ ekkor azt a programot jelöli, ahol az utasításhalmaz a következő:\\
+	$
+	\begin{aligned}[t]
+		\{s_1 &= v[1] := 0,\\
+	    s_2 &= v[2] := 0, \\
+		&\dots, \\
+		 s_n &= v[n] := 0\}\\
+	\end{aligned}
+	$
+	\paragraph{}
+	A ''\textit{doboznak}'' tehát nincs különleges szerepe, nem jelent semmi olyat, hogy itt az összes utasítás egyszerre hirtelen végbe megy, vagy meghatározott sorrendben futnak le, csupán egyszerűsíti a jelölésünket.
+	
+	
+	
+	
+	
 	
 	
 	
