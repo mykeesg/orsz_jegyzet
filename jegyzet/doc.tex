@@ -34,6 +34,7 @@ bottom = 25mm]{geometry}
 \newcommand{\egyenesnyil}[2]{\ensuremath{#1 \mapsto_S #2}}
 \newcommand{\gorbenyil}[2]{\ensuremath{#1 \hookrightarrow_S #2}}
 \newcommand{\doboz}[2]{ \ensuremath{\mathop{\square}\limits_{#1=1}^{#2} }  }
+\newcommand{\fixpont}{\ensuremath{\mathlarger{\mathlarger{\varphi}}_S}}
 
 
 \setstretch{1.2}
@@ -731,7 +732,7 @@ bottom = 25mm]{geometry}
 	$\\
 	A program fixpontja tehát a $\{0, 1, \dots, 10 \}$ halmaz.
 	
-\subsection{Specifikáció}	
+	\subsection{Specifikáció}	
 	Az étkező filozófusok példájánál már fogalmaztunk meg specifikációs feltételeket, mellyel a \textit{feladat}ot próbáltuk matematikai relációkkal megfogalmazni.
 	\paragraph{}Ahhoz azonban, hogy program és feladat megoldási kapcsolatát tudjuk vizsgálni, szükségünk lesz a kettő közötti megfeleltetésre az ellenőrzéshez.
 	\begin{align*}
@@ -742,8 +743,8 @@ bottom = 25mm]{geometry}
 	&P \vartriangleright_h R & \haromszog{P\land K}{R\land K}\\
 	&P \mapsto_h R &\egyenesnyil{P\land K}{R \land K}\\
 	&P \hookrightarrow_h R &\gorbenyil{P\land K}{R \land K}\\
-    &R \in FP_h \text{(azaz: }FP_h \Rightarrow R) & \mathlarger{\mathlarger{\varphi}}_S \land K \Rightarrow R\\
-    &Q \in TERM_h  \text{(azaz: }Q \hookrightarrow_h FP_h) & sp(s_0, Q) \land K \hookrightarrow_S \mathlarger{\mathlarger{\varphi}}_S
+	&R \in FP_h \text{(azaz: }FP_h \Rightarrow R) & \fixpont \land K \Rightarrow R\\
+	&Q \in TERM_h  \text{(azaz: }Q \hookrightarrow_h FP_h) & sp(s_0, Q) \land K \hookrightarrow_S \mathlarger{\mathlarger{\varphi}}_S
 	\end{align*}
 	
 	\paragraph{}
@@ -763,29 +764,55 @@ bottom = 25mm]{geometry}
 	\section{konzultáció}
 	\paragraph{}Szükségünk lesz még néhány nem alkalmazott, de a későbbiekben fontos jelölés megismerésére. Az állapotterünk eddig szinte minden esetben egyetlen $x$ változót tartalmazott, azonban ezek nagyon speciális eseteket fednek le, egy absztrakt program bőven több, mint egy változót szokott használni.
 	\paragraph{}
-	$V = vektor([1..n], \mathbb{N})$ jelölje azokat a vektorokat, melyet a programozási ismereteink alapján tömbökként képzelhetünk el. Ezeket a már megszokott módon \textit{indexelhetjük}, melyet 1-től kezdünk, valamint az utolsó megengedett index $n$. A vektornál fel van tüntetve a típusérték-halmaz, azaz hogy milyen elemeket tartalmaz, illetve a mérete is. Egy valós számokat tartalmazó, 6 hosszú vektort ez alapján $V = vektor([1..6], \mathbb{R})$ módon jelölnénk. Lehetőségünk van tetszőleges típusparaméterezésű vektort definiálni, ám ha nem egyértelmű, milyen típus-műveletek értelmezettek ezeken, akkor azokat mindenképp fel kell tüntetni.
+	$V = vektor([1..n], \mathbb{N})$ jelölje azokat a vektorokat, melyet a programozási ismereteink alapján tömbökként képzelhetünk el. Ezeket a már megszokott módon \textit{indexelhetjük}, melyet 1-től kezdünk, valamint az utolsó megengedett index $n$. A vektornál fel van tüntetve a típusérték-halmaz, azaz hogy milyen elemeket tartalmaz, illetve a mérete is. Egy valós számokat tartalmazó, 6 hosszú vektort ez alapján $V = vektor([1..6], \mathbb{R})$ módon jelölnénk. Lehetőségünk van tetszőleges típus-paraméterezésű vektort definiálni, ám ha nem egyértelmű, milyen típus-műveletek értelmezettek ezeken az elemeken, akkor azokat mindenképp fel kell tüntetni.
 	
 	\paragraph{}
 	Az absztrakt program megadásakor előfordul, hogy pontosan ugyan annyi utasításunk van, mint ahány dimenziójú az állapottérben található vektor, és az összes ilyen utasítás pont a sorszámának megfelelő komponensét módosítaná az vektornak. Ahhoz, hogy ne kelljen mind az $n$ utasítást felsorolni, egy egyedi jelölést fogunk a ''vessző'' helyett alkalmazni:\\
 	Az $ S = (s_0, \{ \doboz{i}{n} s_i = v[i] := 0  \}) $ ekkor azt a programot jelöli, ahol az utasításhalmaz a következő:\\
 	$
 	\begin{aligned}[t]
-		\{s_1 &= v[1] := 0,\\
-	    s_2 &= v[2] := 0, \\
-		&\dots, \\
-		 s_n &= v[n] := 0\}\\
+	\{s_1 &= v[1] := 0,\\
+	s_2 &= v[2] := 0, \\
+	&\dots, \\
+	s_n &= v[n] := 0\}\\
 	\end{aligned}
 	$
 	\paragraph{}
 	A ''\textit{doboznak}'' tehát nincs különleges szerepe, nem jelent semmi olyat, hogy itt az összes utasítás egyszerre hirtelen végbe megy, vagy meghatározott sorrendben futnak le, csupán egyszerűsíti a jelölésünket.
+	\\A vektor indexelésére a $v[i]$ formát, vagy a rövidebb, $v_i$ jelölést egyaránt használhatjuk.
+	\paragraph{}Be kell vezetnünk még egy függvényt, hogy a későbbi számításainkat megkönnyítsük.
+	$\begin{aligned}[t]
+	&\chi: \mathbb{L} \rightarrow \{0, 1\}\\
+	&\chi(hamis) = 0\\
+	&\chi(igaz) = 1\\
+	\end{aligned}
+	$
+	\paragraph{}
+	Jól látszik, hogy ez a függvény (\textit{khi}) csupán egy megfeleltetés a $\{hamis, igaz\}$ és a $\{0, 1\}$ halmazok között (ahogy pl. a \verb|C, C++| nyelvekben az implicit típus-konverzió történik), de a formális rendszerünkben szükségünk van egy ilyen függvényre, mely ezt ''elvégzi'', hiszen feltételes szummáknál nagyban megkönnyíti a dolgunkat.
+	
+	\paragraph{Példafeladat}
+	\paragraph{}
+	$
+	\begin{aligned}
+	V = &vektor([1..n], \mathbb{N}^+)\\
+	\textbf{A} = &V\\
+	&v\\
+	\textbf{B} = &V\\
+	&v'\\
+	S = &(SKIP,\{\doboz{i}{n} v_i := 2*v_i, \text{ ha } 2 \nmid v_i \})
+	\end{aligned}
+	$
+	\\\\
+	Teljesülnek-e az alábbi tulajdonságok?
+	\begin{itemize}
+		\item $ \fixpont \Rightarrow (\forall i \in [1..n]: 2 | v_i)$
+		\item $(2|v_j) \textit{ stabil}_S \text{ (tetszőleges } j \in [1..n]\text{-re})$
+		\item legyen $j \in [1..n]$ tetszőleges: $\big( (2\nmid v_j) \land (t= \sum\limits_{k=1}^{n} v_k)\big) \mapsto_S (t < \sum\limits_{k=1}^{n}v_k) $
+	\end{itemize}
 	
 	
-	
-	
-	
-	
-	
-	
+	%TODO: variáns-függvény tétele
+	%TODO: paraméter-tér bemutatása, pl. az A = ZxZ (x,y) és B=Z(x')-nél mi a paramétertér, ha annyit akar a program, hogy egy számhoz (x') hozzárendeli az y-ban a nála eggyel kisebb számot. (tökmindegy mit akar a paraméter jelenteni, azaz a (5,4), (5,2), (5,1), (5,25) állapotok mindegyikét egyként tudom az x'=5-tel jellemezni)
 	
 	\newpage
 	\section{Megoldások}
