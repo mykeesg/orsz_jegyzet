@@ -790,7 +790,70 @@ bottom = 25mm]{geometry}
 	\paragraph{}
 	Jól látszik, hogy ez a függvény (\textit{khi}) csupán egy megfeleltetés a $\{hamis, igaz\}$ és a $\{0, 1\}$ halmazok között (ahogy pl. a \verb|C, C++| nyelvekben az implicit típus-konverzió történik), de a formális rendszerünkben szükségünk van egy ilyen függvényre, mely ezt ''elvégzi'', hiszen feltételes szummáknál nagyban megkönnyíti a dolgunkat.
 	
-	\paragraph{Példafeladat}
+	\paragraph{Feladat}
+	Tekintsük az alábbi \textbf{A} állapotteret, \textbf{B} paraméterteret, és a rajta értelmezett \textbf{S} programot:
+	\begin{align*}
+	\textbf{A} &= \underset{x}{V} \times \underset{p}{\mathbb{N}_0} \qquad \qquad \qquad \text{ ahol V = } vektor([1..n], \mathbb{N}_0)\\
+	S &= \Big(p := 1, \{\doboz{i}{n} x_i,\ p :=1,\ p*x_i\ \}\Big)
+	\end{align*}
+	
+	Teljesülnek-e az alábbi tulajdonságok?
+	\begin{enumerate}[a)]
+		\item legyen $k \in [1..n]$ tetszőleges: $\egyenesnyil{(x_k \ne 1)}{(x_k = 1)}$
+		\item $ \fixpont \Rightarrow \big( (\forall i \in [1..n]: x_i = 1) \land (p>0)\big) $
+		\item $\fixpont \Rightarrow \big(\sum\limits_{k=1}^{n}\chi(x_k=42) = 0\big)$
+	\end{enumerate}
+	
+	\paragraph{a)}
+	\paragraph{}
+	$
+	\begin{aligned}
+	\egyenesnyil{(x_k\ne 1)}{(x_k=1)} &=\\
+	\haromszog{(x_k\ne 1)}{(x_k=1)} &\land \exists s_i\in S: (x_k\ne 1) \land (x_k\ne 1) \Rightarrow lf(s_i, (x=1)) = \\
+	&\text{Külön kell vizsgálnunk, ha } k\ne i \text{ és } k = i:\\
+	k \ne i &\text{, azaz a vektor elemet nem módosítjuk:}\\
+	(x_k \ne 1) &\Rightarrow ((x_k \ne 1) \lor (x_k = 1))^{(x_k \text{ változatlan})} = (x_k \ne 1) \Rightarrow \uparrow = \uparrow \\
+	k=i, &\text{ azaz pont azt a vektor elemet módosítjuk: (SKIP+feltétel):}\\
+	(x_k \ne 1) \land (x_k \ne 1) &\land \uparrow \Rightarrow ((x_k \ne 1) \lor (x_k = 1))^{x_k \leftarrow 1} = \\
+	(x_k \ne 1) &\Rightarrow (1=1) \lor (1\ne 1) = \uparrow \\
+	\exists s_i \in &S \text{-ben legyen (az egyenesnyíl defjében szereplő) } s_i := s_k \\
+	(x_k \ne 1) &\Rightarrow lf\big((x_k,\ p := 1,\ p*x_k), (x_k = 1)\big) =\\
+	(x_k \ne 1) &\Rightarrow (x_k = 1)^{x_k \leftarrow 1} =\\
+	(x_k \ne 1) &\Rightarrow (1=1) = \uparrow \\
+	\egyenesnyil{(x_k\ne 1)}{(x_k=1)} &\text{ tehát teljesül.}
+	\end{aligned}
+	$
+	
+	\paragraph{b)}
+	\paragraph{}
+	$
+	\begin{aligned}
+	\fixpont &=\bigwedge_{s_i  \in S} \big( \pi_i \rightarrow x_i = y_i \big), \text{ ahol } \mathlarger{s_i = (x_i := y_i, }\text{ ha }\mathlarger{ \pi_i)} \\
+	\fixpont &= \uparrow \rightarrow x_i = 1 \land p = p*x_i (\forall i \in [1..n]) \\
+	\fixpont &= (x_i = 1) \land (p=p*x_i)\qquad \qquad (\forall i \in [1..n])\\
+	\fixpont &= (x_i = 1)\qquad \qquad (\forall i \in [1..n])\\
+	&\text{Ez a programunk fixpontja. Nézzük meg, mit kér a feladat?}\\
+	\fixpont &\Rightarrow R = \fixpont \Rightarrow \big( (\forall i \in [1..n]: x_i = 1) \land (p>0)\big) = \\
+	\forall i &\in [1..n]: (x_i = 1) \Rightarrow \big( (\forall i \in [1..n]: x_i = 1) \land (p>0)\big)
+	\end{aligned}
+	$
+	\paragraph{}
+	Ez azonban nem teljesül. A bal oldalon lévő állítás (a vektor minden eleme 1) semmit nem mond nekünk $p$ értékéről. Gondoljunk bele, ha a vektorban előfordul a $0$, mint elem. Ebben az esetben a program futása során a $p$ értékét egyszer $0$-val fogja szorozni, így a fixpontban a $p$ értéke is 0 lesz.
+	
+	\paragraph{c)} A fixpontot az előző részfeladatban már kiszámoltuk, így azt most nem kell újra megtenni.
+	\paragraph{}
+	$
+	\begin{aligned}	
+	\fixpont &\Rightarrow R = \fixpont \Rightarrow \big(\sum\limits_{k=1}^{n}\chi(x_k=42) = 0\big) = \\
+	\forall i &\in [1..n]: (x_i = 1) \Rightarrow \big(\sum\limits_{k=1}^{n}\chi(x_k=42) = 0\big)\\
+	\end{aligned}
+	$
+	\paragraph{}A kérdés tehát az, hogy ha a vektor minden eleme $1$, akkor a $k \in [1..n]$ intervallumon összegzett a $\chi(x_k=42)$ függvény értéke vajon $0$-e. Ez viszont igaz, mivel a $\chi$ definíció szerint csak igaz értékekhez rendel $1$-et, a bal oldal alapján viszont $\forall k$ értékre a $\chi$ függvény paramétere hamis (ha $x_k=1$, akkor nem lehet 42), azaz eredménye tetszőleges helyen $0$, így a vektor minden elemére véve, és ezeket összegezve is 0.
+
+	\paragraph{}
+	Az $a)$ feladatrészben fontos megjegyezni, hogy a kérdés egy konkrét (tetszőleges) $k$ értékre kérdez rá, míg a programunkban $i$ csak egy futóindex az összes program könnyebb jelölésére. Külön kell tehát kezelni az $i=k$ és az $i\ne k$ eseteket, mivel más történik, ha az adott értéket pont módosítjuk és más, ha nem. (Ugyanis ha nem módosul, akkor nincs állapotváltozás, de ha igen, akkor kérdés, hogy jó irányba változik-e.)
+		
+	\paragraph{Házi}
 	\paragraph{}
 	$
 	\begin{aligned}
@@ -802,17 +865,18 @@ bottom = 25mm]{geometry}
 	S = &(SKIP,\{\doboz{i}{n} v_i := 2*v_i, \text{ ha } 2 \nmid v_i \})
 	\end{aligned}
 	$
-	\\\\
+	\paragraph{}
 	Teljesülnek-e az alábbi tulajdonságok?
 	\begin{itemize}
 		\item $ \fixpont \Rightarrow (\forall i \in [1..n]: 2 | v_i)$
+		\item $ \fixpont \Rightarrow \sum\limits_{k=1}^{n}\chi(2 \nmid v_k) = 0$
 		\item $(2|v_j) \textit{ stabil}_S \text{ (tetszőleges } j \in [1..n]\text{-re})$
 		\item legyen $j \in [1..n]$ tetszőleges: $\big( (2\nmid v_j) \land (t= \sum\limits_{k=1}^{n} v_k)\big) \mapsto_S (t < \sum\limits_{k=1}^{n}v_k) $
 	\end{itemize}
 	
 	
-	%TODO: variáns-függvény tétele
-	%TODO: paraméter-tér bemutatása, pl. az A = ZxZ (x,y) és B=Z(x')-nél mi a paramétertér, ha annyit akar a program, hogy egy számhoz (x') hozzárendeli az y-ban a nála eggyel kisebb számot. (tökmindegy mit akar a paraméter jelenteni, azaz a (5,4), (5,2), (5,1), (5,25) állapotok mindegyikét egyként tudom az x'=5-tel jellemezni)
+	
+	
 	
 	\newpage
 	\section{Megoldások}
