@@ -468,12 +468,13 @@ bottom = 25mm]{geometry}
 		\def\secondset{(6.5,3) ellipse (3 and 3)}		
 		
 		% color sets
+		\fill[gray, opacity=0.1] \firstset;
 		% \fill[mygreen] \firstset \secondset;
 		
 		% color intersection
 		\begin{scope}
-		\clip \firstset;
-		\fill[gray, opacity=0.2] \secondset;
+			\clip \firstset;
+			\fill[gray, opacity=0.2] \secondset;
 		\end{scope}
 		
 		% outline of sets
@@ -636,8 +637,59 @@ bottom = 25mm]{geometry}
 	A korábbiakban egy biztonsági tulajdonságot néztünk a \textit{háromszög} definíciójában. Ez azonban nem követelte meg, hogy haladjon is a programunk, így érezhető, hogy ez még kevés lesz ahhoz, hogy egy programot jól működését jellemezhessük. Pont ezért bevezetjük az \textit{egyenes nyíl} definícióját:
 	
 	$$P \mapsto_S Q ::= P \vartriangleright_S Q \land \exists s_i \in S: P \land \neg Q \Rightarrow lf(s_i, Q) $$
+		
+	Az \textit{egyenes nyíl} tehát egy biztonsági és haladási (''biztosítja'') tulajdonságot garantál egyszerre nekünk: a $P$ állapotot csak $Q$-n keresztül hagyhatjuk el, viszont kell léteznie (legalább egy, de lehet több) olyan utasításnak az absztrakt programban, mely egy lépésben átvisz minket tetszőleges $P$-beli állapotból $Q$-ba. Ezt szemlélteti a \ref{fig:egyenes} ábra.
 	
-	Az \textit{egyenes nyíl} tehát egy biztonsági és haladási (''biztosítja'') tulajdonságot garantál egyszerre nekünk: a $P$ állapotot csak $Q$-n keresztül hagyhatjuk el, viszont kell léteznie (legalább egy, de lehet több) olyan utasításnak az absztrakt programban, mely egy lépésben átvisz minket tetszőleges $P$-beli állapotból $Q$-ba.
+	\begin{figure}[!ht]
+		\centering
+		\begin{tikzpicture}[line width=1pt,>=latex]
+		
+		% define sets
+		\def\firstset{(3,3) circle (3)}
+		\def\secondset{(6.5,3) circle (3)}		
+		
+		% color (first \ second) set
+		\begin{scope}[even odd rule, overlay]
+		\clip 
+		\secondset
+		(current bounding box.south west) rectangle
+		(current bounding box.north east)
+		;
+		
+		\fill[gray, opacity=0.2] \firstset;
+		\end{scope}
+		
+		% outline of sets
+		\draw \firstset \secondset;
+		
+		% set labels
+		\node[font=\Large\bfseries] at (1.5,5) {$P$};
+		\node[font=\Large\bfseries] at (8,5) {$Q$};
+		
+		% Nope points/arrows
+		\foreach \ax/\ay/\bx/\by in {
+			0.5/2.2/-0.3/1.7
+		}{
+			\node at (\ax, \ay) {\textbullet};
+			\path[->, myred] (\ax, \ay) edge [bend left] (\bx, \by);
+		}
+		
+		% Correct points/arrows
+		\foreach \ax/\ay/\bx/\by in {
+			2.8/4.5/4.5/3.8,
+			2.5/3.3/1.5/3,
+			2.5/1/7.5/2.5
+		}{
+			\node at (\ax, \ay) {\textbullet};
+			\path[->, myblue] (\ax, \ay) edge [bend left] (\bx, \by);
+		}
+		
+		
+		\end{tikzpicture}
+		\caption{Egyenes nyíl}
+		\label{fig:egyenes}
+	\end{figure}
+
 	\paragraph{}
 	Az egyenes nyíl teljesülését a korábbiakhoz hasonlóan definíció alapján fogjuk ellenőrözni. Először meg kell vizsgálnunk, hogy a \textit{háromszög} tulajdonság teljesül -e rá. Amennyiben igen, akkor további ellenőrzést kíván annak a programnak a megtalálása, mely biztosítja a haladást. (Ha már a háromszög vizsgálatánál elbukik egy feltétel, akkor biztos, hogy az egyenes nyíl sem fog rá teljesülni.)
 	
@@ -794,7 +846,7 @@ bottom = 25mm]{geometry}
 	Tekintsük az alábbi \textbf{A} állapotteret, \textbf{B} paraméterteret, és a rajta értelmezett \textbf{S} programot:
 	\begin{align*}
 	\textbf{A} &= \underset{x}{V} \times \underset{p}{\mathbb{N}_0} \qquad \qquad \qquad \text{ ahol V = } vektor([1..n], \mathbb{N}_0)\\
-	S &= \Big(p := 1, \{\doboz{i}{n} x_i,\ p :=1,\ p*x_i\ \}\Big)
+	S &= \Big(p := 1, \{\doboz{i}{n} x_i,\ p :=1,\ p\cdot x_i\ \}\Big)
 	\end{align*}
 	
 	Teljesülnek-e az alábbi tulajdonságok?
