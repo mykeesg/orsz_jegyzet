@@ -7,5 +7,5 @@ Amennyiben valamilyen kérdés felmerül, írjatok emailt a mykee.sg@gmail.com v
 
 A jegyzet bár gondos odafigyeléssel készült, előfordulhatnak benne hibák, így ha esetleg elírást találsz benne, feltétlenül szólj!
 
-##ZH-hoz tudnivalók
+## ZH-hoz tudnivalók
 A zárthelyire 90 perc áll rendelkezésetekre, a feladat megoldásához csupán üres A4es lapot lehet használni (tehát nincs cheat-sheet), ezt vegye mindenki figyelembe!
