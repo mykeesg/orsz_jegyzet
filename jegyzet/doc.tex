@@ -10,6 +10,7 @@ bottom = 25mm]{geometry}
 \usepackage{lmodern}
 \usepackage[magyar]{babel}
 \usepackage[utf8]{inputenc}
+\usepackage{hyperref}
 \usepackage[T1]{fontenc}
 \usepackage{graphicx} %elte logo
 \usepackage{amssymb}
@@ -438,7 +439,7 @@ bottom = 25mm]{geometry}
 		\lceil lf(s,R) \rceil &= (x>0 \rightarrow (x>1)^{x \leftarrow -x}) \land (x \le 0 \rightarrow x > 1) \\
 		&= (x>0 \rightarrow -x>1 ) \land (x \le 0 \rightarrow x > 1) \\
 		&= (x \le 0 \lor -x > 1) \land (x > 0 \lor x > 1) \\
-		&= (x \le 0 \lor x < 1) \land (x>0) \\
+		&= (x \le 0 \lor x < -1) \land (x>0) \\
 		&= (x \le 0) \land (x>0) \equiv Hamis.
 		\end{aligned}$\\
 		Átgondolva mit is akartunk kiszámolni, milyen állapotból indulva teljesíthető az a követelmény, hogy $(x>1)$, ha a programunk a pozitív számokon előjelet vált, a negatívakat (és nullát) pedig nem változtatja?\\
@@ -926,9 +927,26 @@ bottom = 25mm]{geometry}
 		\item legyen $j \in [1..n]$ tetszőleges: $\big( (2\nmid v_j) \land (t= \sum\limits_{k=1}^{n} v_k)\big) \mapsto_S (t < \sum\limits_{k=1}^{n}v_k) $
 	\end{itemize}
 	
+\paragraph{}Megfelel-e az alábbi S program a megadott specifikációnak?
+	\begin{align*}
+	\textbf{A} &= \underset{a}{\mathbb{N}^+} \times \underset{k}{\mathbb{Z}} \times \underset{l}{\mathbb{L}} \times \underset{n}{\mathbb{N}^+}\\
+	\textbf{B} &= \underset{n'}{\mathbb{N}^+} \\
+	S &= \left(s_0 : \:\, a,\ k,\ l := 1,\ 1,\ \uparrow, \left\{
+	\begin{aligned}
+	s_1&: \:\, k,\ l := k+1,\ \neg l \text{; ha } (l = \uparrow \land k<n), \\
+	s_2&: \:\, a,\ l := a \cdot k,\ \neg l \text{; ha } (l=\downarrow)
+	\end{aligned}
+	\right\} \right)
+	\end{align*}
 	
+	\begin{enumerate}[a)]
+		\item $(n=n')\in INIT_h$
+		\item $(1\le k\le n) \in inv_h$
+		\item $(k=n) \in FP_h$
+	\end{enumerate}
 	
-	
+\paragraph{}
+	További feladatokat a \href{http://people.inf.elte.hu/mykeesg/orsz17_18_2/gyak.pdf}{http://people.inf.elte.hu/mykeesg/orsz17\_18\_2/gyak.pdf} címen elérhető feladatgyűjteményben találhattok, megoldásokkal együtt. Nem lektorált, így ennek tartalmát is fenntartásokkal kell kezelni!
 	
 	\newpage
 	\section{Megoldások}
@@ -981,14 +999,11 @@ bottom = 25mm]{geometry}
 			&= (m+1 = n-1) \\
 			&= (m = n-2) \\
 			lf(s_2, R) &= lf(n := n + 1, ha\ n < m;\ (m = n)) \\
-			&= (n < m \rightarrow (m = n)^{\substack{ m \leftarrow m + 1 \\ n \leftarrow n - 1 }}) \land (n \ge m \rightarrow m = n) \\
-			&= (n < m \rightarrow m + 1 = n - 1) \land (n \ge m \rightarrow m = n) \\
-			&= (n \ge m \lor m + 1 = n - 1) \land (n < m \lor m = n) \\
-			&= (n \ge m \lor m = n - 2) \land (n \leq m) \\
-			&\text{Alkalmazva a } (A \lor B) \land C = (A \land C) \lor (B \land C) \text{ szabályt:} \\
-			&= (n \ge m \land n \leq m) \lor (m = n - 2 \land n \leq m) \\
-			&= (n = m)\ \lor \downarrow \\
-			&\text{Mivel } A\ \lor \downarrow = A: \\
+			&= (n < m \rightarrow (m = n)^{\substack{ n \leftarrow n + 1 }}) \land (n \ge m \rightarrow m = n) \\
+			&= (n < m \rightarrow m = n + 1) \land (n \ge m \rightarrow m = n) \\
+			&= (n \ge m \lor m = n + 1) \land (n < m \lor m = n) \\
+			&= (n \ge m \lor m = n + 1) \land (n \leq m) \\
+			&\text{Egyszerűsítve: } \\
 			&= (n = m) \\
 			lf(S, R) &= lf(s_1, R) \land lf(s_2, R) \\
 			&= (m = n-2) \land (n = m) \\
