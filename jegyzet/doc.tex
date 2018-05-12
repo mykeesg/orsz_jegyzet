@@ -1046,6 +1046,57 @@ bottom = 25mm]{geometry}
 	\newpage
 	\section{konzultáció}
 	7. tétel + 8. tétel + 11. tétel
+	
+	\subsection{Aszinkronitás transzformáció (7. tétel)}
+	%TODO rövid bevezető
+	
+	\subsubsection{Aszinkronitás tétel}
+	%TODO rizsa
+	Adott $F$ absztrakt program: 
+	\begin{align*}
+	F = ( &\dots, \{ \dots, \\
+		&[se]\ x := x \oplus d, ha\ bu\ || \dots, \\
+		&[re]\ vs, x := f(vs, x), g(x), ha\ b(x) \land bv\ || \dots\}),
+	\end{align*}
+	ahol
+	\begin{align*}
+	&x := x \oplus d: \text{$x$ információtartalmának növelése, $d$ hozzáfűzése}, \\
+	&bu, bv: \text{$x$-től független logikai változók}, \\
+	&g(x): \text{eldobja a legrégebbi információt $x$-ből}, \\
+	&b(x): \text{igaz, hogy ha van új információ $x$-ben}, \\
+	&fs(vs, x): \text{kiolvassa a legrégebbi információt $x$-ből, majd $vs$ alapján módosít rajta}.
+	\end{align*}
+	Viszont ez nem aszinkron, ugyanazt az $x$-et használják.
+	
+	\subsubsection{Aszinkronitás tétel}
+	%TODO rizsa
+	\begin{itemize}
+		\item $b(x) \Rightarrow b(x \oplus d),$
+		\item $b(x) \Rightarrow f(vs, x) = f(vs, x \oplus d),$
+		\item $b(x) \Rightarrow g(x \oplus d) = g(x) \oplus d.$
+	\end{itemize}
+	
+	\subsubsection{Újabb program}
+	%TODO rizsa
+	Vezessünk be egy $c$ csatornaváltozót, valamint egy $y$-t, és definiáljuk a $b(y)$-t a $b(x)$-hez hasonló módon.
+	\begin{align*}
+	G = ( &\dots, \{ \dots, \\
+	&[se]\ x, c := x \oplus d, hiext(c, d) ha\ bu\ || \dots, \\
+	&[re]\ vs, x, y := f(vs, y), g(x), g(y), ha\ b(y) \land bv\ || \dots, \\
+	&[ch]\ c, y := lorem(c), y \oplus c.lov, ha\ c.dom\ || \dots\}).
+	\end{align*}
+	Mivel $x$ csak magára hivatkozik, elhagyható. Továbbá az így kapott program lényegében ekvivalens $F$-fel. Valamint kaptunk egy új invariánst is: $(x = y \oplus c) \in inv_G$.
+	
+	\subsubsection{Lényegében ekvivalens}
+	%TODO rizsa
+	$F$ lényegében ekvivalens $G$-vel, ha az alábbi tulajdonságok teljesülnek:
+	\begin{align*}
+	& P \vartriangleright_F Q \Rightarrow P' \vartriangleright_G Q', \\
+	& P \hookrightarrow_F Q \Rightarrow P' \hookrightarrow_G Q', \\
+	& P \in inv_F(Q) \Rightarrow P' \in inv_G(Q'),
+	\end{align*}
+	ahol $P' = P^{x \leftarrow y \oplus c}$ és $Q' = Q^{x \leftarrow y \oplus c}$.
+	
 	\newpage
 	\section{konzultáció}
 	9. tétel
