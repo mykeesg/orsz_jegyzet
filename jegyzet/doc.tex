@@ -1199,6 +1199,59 @@ bottom = 25mm]{geometry}
 	\end{itemize}
 	
 	
+	\subsubsection{Szinkron, közös memóriás architektúra}
+	\begin{figure}[h!]
+		\centering
+		\begin{tikzpicture} [
+			emptyblock/.style={rectangle, text width=4.5cm, line width=2pt, minimum height=1.3cm, align=center},
+			wideblock/.style={emptyblock, text width=12cm, draw},
+			memblock/.style={emptyblock, text width=2cm, draw},
+			procblock/.style={emptyblock, text width=1.3cm, draw},
+			clockblock/.style={emptyblock, minimum height=0.8cm, text width=0.8cm, draw},
+			normline/.style={>=latex, line width=2, black}
+		]
+		\node[wideblock] (memory) {};
+		\node[left=0.5cm of memory] (memlabel) {\large $M$};
+		\node[memblock, align=center, right=0cm of memory.west] (mem1) {\large $M_1$};
+		\node[memblock, align=center, left=3cm of memory.east] (memi) {\large $M_i$};
+		\node[emptyblock, align=center] (memdots) at ($(mem1)!0.5!(memi)$) {\large $\dots$};
+		\node[emptyblock, align=center] (memdots2) at ($(memi.east)!0.5!(memory.east)$) {\large $\dots$};
+		
+		\node[procblock, above=2cm of mem1] (proc1) {\large $P_1$};
+		\node[procblock, above=2cm of memi] (prock) {\large $P_k$};
+		
+		\node[clockblock, above=of $(proc1.north)!0.5!(prock.north)$] (clock) {\large $c$};
+		
+		\node[emptyblock] (procdots) at ($(proc1)!0.5!(prock)$) {\large $\dots$};
+		
+		\draw[normline] (mem1) -- (proc1) node[midway, right] {\large r/w};
+		\draw[normline] ($(memi.north) - (0.5, 0)$) -- (proc1) node[midway, above] {\large r};
+		\draw[normline] (memi) -- (prock) node[midway, right] {\large r/w};
+		\draw[normline] (clock) -- (proc1);
+		\draw[normline] (clock) -- (prock);
+		\end{tikzpicture}
+		\caption{Szinkron, közös memóriás architektúra}
+		\label{fig:async}
+	\end{figure}
+	
+	\begin{itemize}
+		\item Hasonló az aszinkronhoz, csak itt közös $c$ órajel van.
+		\item Egyszerre többen írhatnak ugyanoda, ha ugyanazt írják.
+		\item Többen olvashatják ugyanazt.
+		\item A szimultán értékadások leképezhetőek több processzorra.
+		\item Egyszerűsítés: egyetlen utasítást hajtunk végre egy időben.
+	\end{itemize}
+	
+	Leképezés:
+	\begin{itemize}
+		\item Utasítások felbontása processzorokra.
+		\item Változók leképezése a memóriába.
+		\item SIMD (Single Instruction Multiple Data), ugyanaz a kontroll-flow minden processzorra.
+		\item Az utasítások és a változók leképezése konzisztens.
+	\end{itemize}
+
+
+
 	\newpage
 	\section{konzultáció}
 	9. tétel
