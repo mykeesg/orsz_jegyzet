@@ -1256,6 +1256,38 @@ bottom = 25mm]{geometry}
 	\section{konzultáció}
 	9. tétel
 	
+	\section{konzultáció}
+	\subsection{Legrövidebb utak}
+	\subsubsection{Alap megoldóprogram}
+	\begin{align*}
+	\textbf{A} &= \underset{W}{\mathbb{R}}^{n \times n} \times \underset{d}{\mathbb{R}}^{n \times n} \\
+	\textbf{B} &= \underset{W'}{\mathbb{R}}^{n \times n} \\
+	\\
+	S = ( s_0: &\mathop{\parallel}_{i,j} d(i,j) := W(i,j), \\
+	\{ s: &\mathop{\parallel}_{i,j} d(i,j) := min(d(i,j), d(i,k) + d(k,j) ) \} \\
+	\end{align*}
+	
+	\subsubsection{Variánsfüggvény}
+	Válasszuk variánsfüggvénynek az alábbit:
+	$$(num, sum) ::= \big(|\bigcup\limits_{d(i,j)=\infty} \{(i,j)\}|, \sum_{d(i,j)< \infty } d(i,j) \big)$$
+	Ezt egy olyan számrendszer-beli számként értelmezzük, melynek első számjegye ($num$) azt mondja meg, hogy még hány csúcspár között nem találtunk utat (azaz hány olyan $(i,j)$ pár van, ahol a hozzájuk rendelt távolság végtelen), a második komponens pedig az összes megtalált út súlyösszegét számolja össze. Minden alkalommal, amikor találunk egy rövidebb utat két, már ismert csúcs között, a második szám értéke fog csökkenni, amikor pedig teljesen új utat fedezünk fel, az első lesz kevesebb. Összességében tehát tényleg használható variánsfüggvényként.
+	
+	\subsubsection{Specifikáció}
+	Az állapot- és paramétertér megegyezik a programnál látottakkal.
+	\begin{itemize}
+		\item $(W = W') \in Init_{W'}$
+		\item $Igaz \in Term_{W'}$
+		\item $FP_{W'} \Rightarrow d = D$
+	\end{itemize}
+	A fixponttal azonban bajban leszünk, a $D$ ugyanis nem ismert kiszámítású függvény (hiszen pont ezért akarunk rá programot írni).\\
+	Finomítsuk a fixpontfeltételt:
+	\begin{itemize}
+		\item $\big([\forall i,j: \exists p \text{ út i,j között: p súlyösszege }=d(i,j)] \land [d(i,j)\le W(i,j)]\big) \in inv_{W'}$
+		\item $FP_{W'} \Rightarrow {\mathlarger\bigwedge\limits_{i,j,k}} d(i,j) = min\big(d(i,j),\ \ d(i,k) + d(k,j)\big)$
+	\end{itemize}
+	Az eredeti fixpont-feltétel jobb oldalán lévő ($d=D$) állítást jelöljük $Z$-vel, az invariánst $P$-vel, míg az új fixpont-feltételt $R$-rel.\\
+	A fixpont-finomítás tételét felhasználva ekkor ha belátjuk, hogy $S$ megfelel az $FP_{W'} \Rightarrow R$, $inv_{W'}P$-nek, és $R \land P \Rightarrow Z$, akkor S megfelel $FP_{W'} \Rightarrow Z$-nek is.
+	\newpage
 	\begin{thebibliography}{9}
 		\bibitem{orsi_jegyzet}
 		\raggedright
