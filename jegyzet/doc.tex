@@ -1134,8 +1134,8 @@ bottom = 25mm]{geometry}
 			\draw[normline] (clock1) -- (proc1);
 			\draw[normline] (clockk) -- (prock);
 		\end{tikzpicture}
-		\caption{Alma}
-		\label{fig:word_align}
+		\caption{Aszinkron, közös memóriás architektúra}
+		\label{fig:async}
 	\end{figure}
 	
 	\begin{itemize}
@@ -1151,6 +1151,53 @@ bottom = 25mm]{geometry}
 		\item $P_j$-nek legyen olvasási joga $VR(s_i)$ területeihez.
 		\item Ha $s_i$ szimultán értékadás, akkor az legyen atomi.
 	\end{itemize}
+
+	
+	\subsubsection{Elosztott rendszer}
+	\begin{figure}[h!]
+		\centering
+		\begin{tikzpicture} [
+			emptyblock/.style={rectangle, text width=4.5cm, line width=2pt, minimum height=1.3cm, align=center},
+			wideblock/.style={emptyblock, text width=12cm},
+			memblock/.style={emptyblock, text width=2cm, draw},
+			procblock/.style={emptyblock, text width=1.3cm, draw},
+			clockblock/.style={emptyblock, minimum height=0.8cm, text width=0.8cm, draw},
+			normline/.style={>=latex, line width=2, black}
+		];
+		\node[memblock, align=center] (mem1) {\large $M_1$};
+		\node[memblock, align=center, right=3cm of mem1] (memk) {\large $M_k$};
+		
+		\node[procblock, above=of mem1] (proc1) {\large $P_1$};
+		\node[procblock, above=of memk] (prock) {\large $P_k$};
+		
+		\node[clockblock, above=of proc1] (clock1) {\large $c_1$};
+		\node[clockblock, above=of prock] (clockk) {\large $c_k$};
+		
+		\node[emptyblock, align=center] (dots) at ($(mem1)!0.5!(memk)$) {\large $\dots$};
+				
+		\draw[normline] (mem1) -- (proc1);
+		\draw[normline] (memk) -- (prock);
+		\draw[normline] (clock1) -- (proc1);
+		\draw[normline] (clockk) -- (prock);
+		
+		\draw[normline, ->] (proc1) -- (prock) node[midway, above] {\large $c_{1k}$};
+		\end{tikzpicture}
+		\caption{Elosztott rendszer}
+		\label{fig:distributed}
+	\end{figure}
+	
+	\begin{itemize}
+		\item Minden processzorhoz külön órajel és külön memória tartozik, egymásét nem látják.
+		\item Kommunikáció csatornákon keresztül történik, melyekhez tartozhat FIFO puffer.
+	\end{itemize}
+	
+	Leképezés:
+	\begin{itemize}
+		\item Minden változó vagy $M$ (memória) vagy $c$ (csatorna) egy eleme.
+		\item Minden $Ch$ változót pont a megfelelő két processzor használhat.
+		\item Minden csatorna csak egyirányú.
+	\end{itemize}
+	
 	
 	\newpage
 	\section{konzultáció}
