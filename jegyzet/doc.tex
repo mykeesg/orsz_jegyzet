@@ -1097,6 +1097,61 @@ bottom = 25mm]{geometry}
 	\end{align*}
 	ahol $P' = P^{x \leftarrow y \oplus c}$ és $Q' = Q^{x \leftarrow y \oplus c}$.
 	
+	
+	
+	\subsection{Programok leképezése különböző architektúrákra + programsémák (8. tétel)}
+	%TODO rövid bevezető
+	
+	\subsubsection{Aszinkron, közös memóriás architektúra}
+	\begin{figure}[h!]
+		\centering
+		\begin{tikzpicture} [
+			emptyblock/.style={rectangle, text width=4.5cm, line width=2pt, minimum height=1.3cm, align=center},
+			wideblock/.style={emptyblock, text width=12cm, draw},
+			memblock/.style={emptyblock, text width=2cm, draw},
+			procblock/.style={emptyblock, text width=1.3cm, draw},
+			clockblock/.style={emptyblock, minimum height=0.8cm, text width=0.8cm, draw},
+			normline/.style={>=latex, line width=2, black}
+		]
+			\node[wideblock] (memory) {};
+			\node[left=0.5cm of memory] (memlabel) {\large $M$};
+			\node[memblock, align=center, right=0cm of memory.west] (mem1) {\large $M_1$};
+			\node[memblock, align=center, left=3cm of memory.east] (memi) {\large $M_i$};
+			\node[emptyblock, align=center] (memdots) at ($(mem1)!0.5!(memi)$) {\large $\dots$};
+			\node[emptyblock, align=center] (memdots2) at ($(memi.east)!0.5!(memory.east)$) {\large $\dots$};
+			
+			\node[procblock, above=2cm of mem1] (proc1) {\large $P_1$};
+			\node[procblock, above=2cm of memi] (prock) {\large $P_k$};
+			
+			\node[clockblock, above=of proc1] (clock1) {\large $c_1$};
+			\node[clockblock, above=of prock] (clockk) {\large $c_k$};
+			
+			\node[emptyblock, above=0cm of $(proc1)!0.5!(prock)$] (procdots) {\large $\dots$};
+			
+			\draw[normline] (mem1) -- (proc1) node[midway, right] {\large r/w};
+			\draw[normline] ($(memi.north) - (0.5, 0)$) -- (proc1) node[midway, above] {\large r};
+			\draw[normline] (memi) -- (prock) node[midway, right] {\large r/w};
+			\draw[normline] (clock1) -- (proc1);
+			\draw[normline] (clockk) -- (prock);
+		\end{tikzpicture}
+		\caption{Alma}
+		\label{fig:word_align}
+	\end{figure}
+	
+	\begin{itemize}
+		\item $M$ közös memória, ``rekeszeit'' indexeljük.
+		\item $P_i$-k processzorok, mindegyik külön $c_i$ órajellel rendelkezik.
+		\item Adott $S=(s_0, \{s_1, \dots, s_n\})$ program minden $s_i$ utasítását egy-egy processzorhoz rendeljük, amely őt fogja futtatni, de egy processzorhoz többet is rendelhetünk: $s_i \rightarrow P_j$.
+	\end{itemize}
+
+	Leképezés:
+	\begin{itemize}
+		\item $s_i$-t a $P_j\ \infty$  sokszor hajtsa végre.
+		\item $P_j$-nek legyen írási joga $VL(s_i)$ területeihez.
+		\item $P_j$-nek legyen olvasási joga $VR(s_i)$ területeihez.
+		\item Ha $s_i$ szimultán értékadás, akkor az legyen atomi.
+	\end{itemize}
+	
 	\newpage
 	\section{konzultáció}
 	9. tétel
