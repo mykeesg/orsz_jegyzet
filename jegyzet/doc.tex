@@ -21,6 +21,7 @@ bottom = 25mm]{geometry}
 \usepackage{tikz} %set drawings
 \usepackage{proof} %unless proofs
 \usepackage{relsize} %bigger symbol size in math mode
+\usepackage[shortlabels]{enumitem}
 
 \usetikzlibrary{arrows, calc, fit, positioning, shapes}
 
@@ -1274,19 +1275,30 @@ bottom = 25mm]{geometry}
 	
 	\subsubsection{Specifikáció}
 	Az állapot- és paramétertér megegyezik a programnál látottakkal.
-	\begin{itemize}
-		\item $(W = W') \in Init_{W'}$
-		\item $Igaz \in Term_{W'}$
+	\begin{enumerate}[(a)]
+		\item $(W = W') \in INIT_{W'}$
+		\item $Igaz \in TERM_{W'}$
 		\item $FP_{W'} \Rightarrow d = D$
-	\end{itemize}
+	\end{enumerate}
 	A fixponttal azonban bajban leszünk, a $D$ ugyanis nem ismert kiszámítású függvény (hiszen pont ezért akarunk rá programot írni).\\
 	Finomítsuk a fixpontfeltételt:
-	\begin{itemize}
-		\item $\big([\forall i,j: \exists p \text{ út i,j között: p súlyösszege }=d(i,j)] \land [d(i,j)\le W(i,j)]\big) \in inv_{W'}$
+	\begin{enumerate}[(a)]
+		\setcounter{enumi}{3}
+		\item $\big(\forall i,j: [\exists p \text{ út i,j között: p súlyösszege }=d(i,j)] \land [d(i,j)\le W(i,j)]\big) \in inv_{W'}$
 		\item $FP_{W'} \Rightarrow {\mathlarger\bigwedge\limits_{i,j,k}} d(i,j) = min\big(d(i,j),\ \ d(i,k) + d(k,j)\big)$
-	\end{itemize}
+	\end{enumerate}
 	Az eredeti fixpont-feltétel jobb oldalán lévő ($d=D$) állítást jelöljük $Z$-vel, az invariánst $P$-vel, míg az új fixpont-feltételt $R$-rel.\\
 	A fixpont-finomítás tételét felhasználva ekkor ha belátjuk, hogy $S$ megfelel az $FP_{W'} \Rightarrow R$, $inv_{W'}P$-nek, és $R \land P \Rightarrow Z$, akkor S megfelel $FP_{W'} \Rightarrow Z$-nek is.
+	
+	\paragraph{Bizonyítás (Indukcióval):}
+	Vegyük $d(i,j)$-t, $m := i$-ből $j$-be az út hossza, ahol $m$ súlyösszege $D(i,j)$.
+	\begin{description}
+		\item[$m=1$:] $D(i,j) = W(i,j)$ és a (d)-ből tudjuk, hogy $d(i,j) \le W(i,j)$, viszont $d(i,j) \le D(i,j)$. Ezeket felhasználva megkapjuk, hogy $d(i,j) = D(i,j)$.
+		\item[$m$-re igaz, lássuk be $m+1$-re:] Azaz $x$-ből a $z$-be már $m$ lépésből el sikert jutnunk, de mi a helyzet, ha $x$-ből $z$-n keresztül $y$-ba akarunk eljutni, tehát $m+1$ lépés esetén? Az indukciós feltevésből már tudjuk, hogy $d(x,z) = D(x,z) \land d(z,y)=D(z,y)=W(z,y)$. Az (e) feltételt felhasználva a következőt kapjuk: $d(x,y) \le d(x,z) + d(z,y) = D(x,z) + D(z,y) = D(x, y)$. A (d)-t alkalmazva pedig a $\le$ jel átírható $=$ jelre.
+	\end{description}
+	Ezáltal beláttuk, hogy (d) és (e) $\Rightarrow$ (c). Tehát az új feladatunk: (a) + (b) + (d) + (e).
+	
+	
 	\newpage
 	\begin{thebibliography}{9}
 		\bibitem{orsi_jegyzet}
