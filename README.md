@@ -7,6 +7,9 @@ Amennyiben valamilyen kérdés felmerül, írjatok emailt a mykee.sg@gmail.com v
 
 A jegyzet bár gondos odafigyeléssel készült, előfordulhatnak benne hibák, így ha esetleg elírást találsz benne, feltétlenül szólj!
 
+##Eredmények
+A megajánlott jegyeket http://people.inf.elte.hu/mykeesg/orsz17_18_2/eredmenyek.pdf itt olvashatjátok.
+
 ## ZH-hoz tudnivalók
 A zárthelyire 90 perc áll rendelkezésetekre, a feladat megoldásához csupán üres A4es lapot lehet használni (tehát nincs cheat-sheet), ezt vegye mindenki figyelembe!
 
